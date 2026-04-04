@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package martketplace.vkr.catalog.v1.client;
+
+option go_package = "github.com/martketplace-vkr/catalog/pkg/api/grpc/v1/client;client";
+
+import "google/protobuf/timestamp.proto";
+import "v1/domain/catalog_domain.proto";
+
+service CatalogClientService {
+  rpc GetCategories(GetCategoriesRequest) returns (GetCategoriesResponse);
+  rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
+  rpc GetProduct(GetProductRequest) returns (GetProductResponse);
+}
+
+message GetCategoriesRequest {
+  int64 parent_id = 1;
+  bool filter_by_parent = 2;
+  bool include_children = 3;
+}
+
+message GetCategoriesResponse {
+  repeated v1.domain.Category categories = 1;
+}
+
+message ListProductsRequest {
+  int64 category_id = 1;
+  int64 vendor_id = 2;
+  uint32 page_size = 3;
+  uint64 page_token = 4;
+}
+
+message ListProductsResponse {
+  repeated v1.domain.Product products = 1;
+  uint64 next_page_token = 2;
+}
+
+message GetProductRequest {
+  int64 product_id = 1;
+}
+
+message GetProductResponse {
+  v1.domain.Product product = 1;
+}
+
+

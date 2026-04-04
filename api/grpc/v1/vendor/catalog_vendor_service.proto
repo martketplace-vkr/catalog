@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+package martketplace.vkr.catalog.v1.vendor;
+
+option go_package = "github.com/martketplace-vkr/catalog/pkg/api/grpc/v1/vendor;vendor";
+
+import "google/protobuf/timestamp.proto";
+import "v1/domain/catalog_domain.proto";
+
+service CatalogVendorService {
+  rpc GetVendorProduct(GetVendorProductRequest) returns (GetVendorProductResponse);
+  rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse);
+  rpc UpdateProduct(UpdateProductRequest) returns (UpdateProductResponse);
+  rpc DeleteProduct(DeleteProductRequest) returns (DeleteProductResponse);
+}
+
+message GetVendorProductRequest{
+  int64 VendorID = 1;
+}
+
+message GetVendorProductResponse{
+  repeated v1.domain.Product products = 1;
+}
+
+message GetCategoriesRequest {
+  int64 parent_id = 1;
+  bool filter_by_parent = 2;
+  bool include_children = 3;
+}
+
+message GetCategoriesResponse {
+  repeated v1.domain.Category categories = 1;
+}
+
+message ListProductsRequest {
+  int64 category_id = 1;
+  int64 vendor_id = 2;
+  uint32 page_size = 3;
+  uint64 page_token = 4;
+}
+
+message ListProductsResponse {
+  repeated v1.domain.Product products = 1;
+  uint64 next_page_token = 2;
+}
+
+message GetProductRequest {
+  int64 product_id = 1;
+}
+
+message GetProductResponse {
+  v1.domain.Product product = 1;
+}
+
+message CreateProductRequest {
+  int64 vendor_id = 1;
+  int64 category_id = 2;
+  string name = 3;
+  string description = 4;
+  string price = 5;
+  uint32 stock_count = 6;
+  repeated v1.domain.ProductAttributeInput attributes = 7;
+  repeated v1.domain.ProductImageInput images = 8;
+}
+
+message CreateProductResponse {
+  v1.domain.Product product = 1;
+}
+
+// Update replaces the full product payload, including attributes and images.
+message UpdateProductRequest {
+  int64 product_id = 1;
+  int64 vendor_id = 2;
+  int64 category_id = 3;
+  string name = 4;
+  string description = 5;
+  string price = 6;
+  uint32 stock_count = 7;
+  repeated v1.domain.ProductAttributeInput attributes = 8;
+  repeated v1.domain.ProductImageInput images = 9;
+}
+
+message UpdateProductResponse {
+  v1.domain.Product product = 1;
+}
+
+message DeleteProductRequest{
+  int64 vendor_id = 1;
+  int64 product_id = 2;
+}
+
+message DeleteProductResponse{
+  
+}

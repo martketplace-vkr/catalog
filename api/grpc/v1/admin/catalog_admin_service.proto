@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package martketplace.vkr.catalog.v1.admin;
+
+option go_package = "github.com/martketplace-vkr/catalog/pkg/api/grpc/v1/admin;admin";
+
+import "v1/domain/catalog_domain.proto";
+
+service CatalogAdminService {
+  rpc CreateCategory(CreateCategoryRequest) returns (CreateCategoryResponse);
+  rpc UpdateCategory(UpdateCategoryRequest) returns (UpdateCategoryResponse);
+  rpc DeleteCategory(DeleteCategoryRequest) returns (DeleteCategoryResponse);
+}
+
+message CreateCategoryRequest {
+  string name = 1;
+  optional int64 parent_id = 2;
+}
+
+message CreateCategoryResponse {
+  v1.domain.Category category = 1;
+}
+
+// Update replaces all mutable category fields.
+// Omit parent_id to make the category a root category.
+message UpdateCategoryRequest {
+  int64 category_id = 1;
+  string name = 2;
+  optional int64 parent_id = 3;
+}
+
+message UpdateCategoryResponse {
+  v1.domain.Category category = 1;
+}
+
+message DeleteCategoryRequest {
+  int64 category_id = 1;
+}
+
+message DeleteCategoryResponse {
+  int64 category_id = 1;
+}
