@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/martketplace-vkr/catalog/pkg/api/grpc/v1/admin"
+	"github.com/martketplace-vkr/catalog/pkg/api/grpc/v1/cart"
 	"github.com/martketplace-vkr/catalog/pkg/api/grpc/v1/client"
 	"github.com/martketplace-vkr/catalog/pkg/api/grpc/v1/vendor"
 
@@ -22,6 +23,7 @@ type CartClient struct {
 	Admin  admin.CatalogAdminServiceClient
 	Client client.CatalogClientServiceClient
 	Vendor vendor.CatalogVendorServiceClient
+	Cart   cart.CatalogCartServiceClient
 
 	conn *grpc.ClientConn
 	cfg  Config
@@ -66,6 +68,7 @@ func (c *CartClient) Start(ctx context.Context) (err error) {
 	c.Client = client.NewCatalogClientServiceClient(c.conn)
 	c.Admin = admin.NewCatalogAdminServiceClient(c.conn)
 	c.Vendor = vendor.NewCatalogVendorServiceClient(c.conn)
+	c.Cart = cart.NewCatalogCartServiceClient(c.conn)
 
 	return nil
 }

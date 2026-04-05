@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package martketplace.vkr.catalog.v1.cart;
+
+option go_package = "github.com/martketplace-vkr/catalog/pkg/api/grpc/v1/cart;cart";
+
+import "v1/domain/catalog_domain.proto";
+
+
+service CatalogCartService {
+  rpc GetProductList(GetProductListRequest) returns (GetProductListResponse);
+}
+
+message GetProductListRequest{
+    repeated int64 product_ids = 1;
+}
+
+message GetProductListResponse{
+    repeated v1.domain.Product products = 1;
+}

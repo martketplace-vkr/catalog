@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/reflection"
 
 	adminpb "github.com/martketplace-vkr/catalog/pkg/api/grpc/v1/admin"
+	cartpb "github.com/martketplace-vkr/catalog/pkg/api/grpc/v1/cart"
 	clientpb "github.com/martketplace-vkr/catalog/pkg/api/grpc/v1/client"
 	vendorpb "github.com/martketplace-vkr/catalog/pkg/api/grpc/v1/vendor"
 	grpcServer "github.com/martketplace-vkr/pkg/server/grpc"
@@ -24,6 +25,7 @@ type Server struct {
 	client     clientpb.CatalogClientServiceServer
 	vendor     vendorpb.CatalogVendorServiceServer
 	admin      adminpb.CatalogAdminServiceServer
+	cart       cartpb.CatalogCartServiceServer
 }
 
 func New(
@@ -31,12 +33,14 @@ func New(
 	client clientpb.CatalogClientServiceServer,
 	vendor vendorpb.CatalogVendorServiceServer,
 	admin adminpb.CatalogAdminServiceServer,
+	cart cartpb.CatalogCartServiceServer,
 ) *Server {
 	return &Server{
 		cfg:    cfg,
 		client: client,
 		vendor: vendor,
 		admin:  admin,
+		cart:   cart,
 	}
 }
 
@@ -56,6 +60,7 @@ func (s *Server) Start(ctx context.Context) (err error) {
 	clientpb.RegisterCatalogClientServiceServer(s.grpcServer, s.client)
 	vendorpb.RegisterCatalogVendorServiceServer(s.grpcServer, s.vendor)
 	adminpb.RegisterCatalogAdminServiceServer(s.grpcServer, s.admin)
+	cartpb.RegisterCatalogCartServiceServer(s.grpcServer, s.cart)
 
 	listener, err := net.Listen("tcp", s.cfg.Host)
 	if err != nil {
