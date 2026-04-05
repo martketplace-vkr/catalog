@@ -1,12 +1,3 @@
-create or replace function set_updated_at()
-returns trigger as
-$$
-begin
-    new.updated_at = now();
-    return new;
-end;
-$$ language plpgsql;
-
 create table categories (
     id bigserial primary key,
     name text not null,
@@ -69,12 +60,3 @@ create unique index product_images_one_main_per_product_uidx
     on product_images (product_id)
     where is_main;
 
-create trigger categories_set_updated_at
-    before update on categories
-    for each row
-    execute function set_updated_at();
-
-create trigger products_set_updated_at
-    before update on products
-    for each row
-    execute function set_updated_at();
