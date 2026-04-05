@@ -19,7 +19,7 @@ const (
 	cmpName = "CatalogClientGrpc"
 )
 
-type CartClient struct {
+type Client struct {
 	Admin  admin.CatalogAdminServiceClient
 	Client client.CatalogClientServiceClient
 	Vendor vendor.CatalogVendorServiceClient
@@ -29,11 +29,11 @@ type CartClient struct {
 	cfg  Config
 }
 
-func New(cfg Config) *CartClient {
-	return &CartClient{cfg: cfg}
+func New(cfg Config) *Client {
+	return &Client{cfg: cfg}
 }
 
-func (c *CartClient) Start(ctx context.Context) (err error) {
+func (c *Client) Start(ctx context.Context) (err error) {
 	if c.cfg.DontRun {
 		return nil
 	}
@@ -73,7 +73,7 @@ func (c *CartClient) Start(ctx context.Context) (err error) {
 	return nil
 }
 
-func (c *CartClient) Stop(_ context.Context) error {
+func (c *Client) Stop(_ context.Context) error {
 	if c.conn == nil {
 		return nil
 	}
@@ -81,18 +81,18 @@ func (c *CartClient) Stop(_ context.Context) error {
 	return c.conn.Close()
 }
 
-func (c *CartClient) GetStartTimeout() time.Duration {
+func (c *Client) GetStartTimeout() time.Duration {
 	return c.cfg.StartTimeout.Duration
 }
 
-func (c *CartClient) GetStopTimeout() time.Duration {
+func (c *Client) GetStopTimeout() time.Duration {
 	return c.cfg.StopTimeout.Duration
 }
 
-func (c *CartClient) GetShutdownDelay() time.Duration {
+func (c *Client) GetShutdownDelay() time.Duration {
 	return c.cfg.ShutdownDelay.Duration
 }
 
-func (c *CartClient) GetName() string {
+func (c *Client) GetName() string {
 	return cmpName
 }
