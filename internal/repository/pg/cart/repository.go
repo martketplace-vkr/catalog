@@ -36,7 +36,7 @@ func (r *repository) SelectProducts(
 			created_at,
 			updated_at
 		from products
-		where id in any($1)
+		where id = any($1)
 		order by id
 	`
 
