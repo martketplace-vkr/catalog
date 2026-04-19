@@ -99,6 +99,10 @@ func filterCategories(categories domain.CategoryList, req dto.GetCategoriesReque
 			continue
 		}
 
+		if req.IncludeChildren && !req.FilterByParent && categoryParentID(category.ParentID) != 0 {
+			continue
+		}
+
 		if !req.IncludeChildren {
 			category.Children = nil
 		} else {
