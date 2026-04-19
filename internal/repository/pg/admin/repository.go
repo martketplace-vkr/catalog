@@ -82,9 +82,25 @@ func (r *repository) UpdateCategory(ctx context.Context, req dto.UpdateCategoryR
 
 func (r *repository) DeleteCategory(ctx context.Context, categoryID int64) (deletedCategoryID int64, err error) {
 	query := `
-		delete from categories
+		with recursive category_tree as (
+			select id, parent_id
+			from categories
+			where id = $1
+
+			union all
+
+			select c.id, c.parent_id
+			from categories c
+			join category_tree ct on c.parent_id = ct.id
+		),
+		deleted as (
+			delete from categories
+			where id in (select id from category_tree)
+			returning id
+		)
+		select id
+		from deleted
 		where id = $1
-		returning id
 	`
 
 	err = r.ctxGetter.DefaultTrOrDB(ctx, r.db).GetContext(ctx, &deletedCategoryID, query, categoryID)
