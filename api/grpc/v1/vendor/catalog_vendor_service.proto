@@ -61,6 +61,7 @@ message CreateProductRequest {
   uint32 stock_count = 6;
   repeated v1.domain.ProductAttributeInput attributes = 7;
   repeated v1.domain.ProductImageInput images = 8;
+  repeated v1.domain.ProductCharacteristicInput characteristics = 9;
 }
 
 message CreateProductResponse {
@@ -78,6 +79,7 @@ message UpdateProductRequest {
   uint32 stock_count = 7;
   repeated v1.domain.ProductAttributeInput attributes = 8;
   repeated v1.domain.ProductImageInput images = 9;
+  repeated v1.domain.ProductCharacteristicInput characteristics = 10;
 }
 
 message UpdateProductResponse {

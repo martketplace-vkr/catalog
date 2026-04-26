@@ -107,20 +107,21 @@ func (x *Category) GetUpdatedAt() *timestamppb.Timestamp {
 }
 
 type Product struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	VendorId      int64                  `protobuf:"varint,2,opt,name=vendor_id,json=vendorId,proto3" json:"vendor_id,omitempty"`
-	CategoryId    int64                  `protobuf:"varint,3,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
-	Name          string                 `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
-	Description   string                 `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
-	Price         string                 `protobuf:"bytes,6,opt,name=price,proto3" json:"price,omitempty"`
-	StockCount    uint32                 `protobuf:"varint,7,opt,name=stock_count,json=stockCount,proto3" json:"stock_count,omitempty"`
-	Attributes    []*ProductAttribute    `protobuf:"bytes,8,rep,name=attributes,proto3" json:"attributes,omitempty"`
-	Images        []*ProductImage        `protobuf:"bytes,9,rep,name=images,proto3" json:"images,omitempty"`
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,11,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState   `protogen:"open.v1"`
+	Id              int64                    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	VendorId        int64                    `protobuf:"varint,2,opt,name=vendor_id,json=vendorId,proto3" json:"vendor_id,omitempty"`
+	CategoryId      int64                    `protobuf:"varint,3,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
+	Name            string                   `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
+	Description     string                   `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	Price           string                   `protobuf:"bytes,6,opt,name=price,proto3" json:"price,omitempty"`
+	StockCount      uint32                   `protobuf:"varint,7,opt,name=stock_count,json=stockCount,proto3" json:"stock_count,omitempty"`
+	Attributes      []*ProductAttribute      `protobuf:"bytes,8,rep,name=attributes,proto3" json:"attributes,omitempty"`
+	Images          []*ProductImage          `protobuf:"bytes,9,rep,name=images,proto3" json:"images,omitempty"`
+	CreatedAt       *timestamppb.Timestamp   `protobuf:"bytes,10,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt       *timestamppb.Timestamp   `protobuf:"bytes,11,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	Characteristics []*ProductCharacteristic `protobuf:"bytes,12,rep,name=characteristics,proto3" json:"characteristics,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *Product) Reset() {
@@ -226,6 +227,13 @@ func (x *Product) GetCreatedAt() *timestamppb.Timestamp {
 func (x *Product) GetUpdatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.UpdatedAt
+	}
+	return nil
+}
+
+func (x *Product) GetCharacteristics() []*ProductCharacteristic {
+	if x != nil {
+		return x.Characteristics
 	}
 	return nil
 }
@@ -342,6 +350,118 @@ func (x *ProductAttributeInput) GetValue() string {
 	return ""
 }
 
+type ProductCharacteristic struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Attributes    []*ProductAttribute    `protobuf:"bytes,3,rep,name=attributes,proto3" json:"attributes,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ProductCharacteristic) Reset() {
+	*x = ProductCharacteristic{}
+	mi := &file_v1_domain_catalog_domain_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ProductCharacteristic) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProductCharacteristic) ProtoMessage() {}
+
+func (x *ProductCharacteristic) ProtoReflect() protoreflect.Message {
+	mi := &file_v1_domain_catalog_domain_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProductCharacteristic.ProtoReflect.Descriptor instead.
+func (*ProductCharacteristic) Descriptor() ([]byte, []int) {
+	return file_v1_domain_catalog_domain_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ProductCharacteristic) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *ProductCharacteristic) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *ProductCharacteristic) GetAttributes() []*ProductAttribute {
+	if x != nil {
+		return x.Attributes
+	}
+	return nil
+}
+
+type ProductCharacteristicInput struct {
+	state         protoimpl.MessageState   `protogen:"open.v1"`
+	Title         string                   `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	Attributes    []*ProductAttributeInput `protobuf:"bytes,2,rep,name=attributes,proto3" json:"attributes,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ProductCharacteristicInput) Reset() {
+	*x = ProductCharacteristicInput{}
+	mi := &file_v1_domain_catalog_domain_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ProductCharacteristicInput) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProductCharacteristicInput) ProtoMessage() {}
+
+func (x *ProductCharacteristicInput) ProtoReflect() protoreflect.Message {
+	mi := &file_v1_domain_catalog_domain_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProductCharacteristicInput.ProtoReflect.Descriptor instead.
+func (*ProductCharacteristicInput) Descriptor() ([]byte, []int) {
+	return file_v1_domain_catalog_domain_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *ProductCharacteristicInput) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *ProductCharacteristicInput) GetAttributes() []*ProductAttributeInput {
+	if x != nil {
+		return x.Attributes
+	}
+	return nil
+}
+
 type ProductImage struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -353,7 +473,7 @@ type ProductImage struct {
 
 func (x *ProductImage) Reset() {
 	*x = ProductImage{}
-	mi := &file_v1_domain_catalog_domain_proto_msgTypes[4]
+	mi := &file_v1_domain_catalog_domain_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -365,7 +485,7 @@ func (x *ProductImage) String() string {
 func (*ProductImage) ProtoMessage() {}
 
 func (x *ProductImage) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_domain_catalog_domain_proto_msgTypes[4]
+	mi := &file_v1_domain_catalog_domain_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -378,7 +498,7 @@ func (x *ProductImage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductImage.ProtoReflect.Descriptor instead.
 func (*ProductImage) Descriptor() ([]byte, []int) {
-	return file_v1_domain_catalog_domain_proto_rawDescGZIP(), []int{4}
+	return file_v1_domain_catalog_domain_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *ProductImage) GetId() int64 {
@@ -412,7 +532,7 @@ type ProductImageInput struct {
 
 func (x *ProductImageInput) Reset() {
 	*x = ProductImageInput{}
-	mi := &file_v1_domain_catalog_domain_proto_msgTypes[5]
+	mi := &file_v1_domain_catalog_domain_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -424,7 +544,7 @@ func (x *ProductImageInput) String() string {
 func (*ProductImageInput) ProtoMessage() {}
 
 func (x *ProductImageInput) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_domain_catalog_domain_proto_msgTypes[5]
+	mi := &file_v1_domain_catalog_domain_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -437,7 +557,7 @@ func (x *ProductImageInput) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductImageInput.ProtoReflect.Descriptor instead.
 func (*ProductImageInput) Descriptor() ([]byte, []int) {
-	return file_v1_domain_catalog_domain_proto_rawDescGZIP(), []int{5}
+	return file_v1_domain_catalog_domain_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *ProductImageInput) GetUrl() string {
@@ -467,7 +587,7 @@ const file_v1_domain_catalog_domain_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\xda\x03\n" +
+	"updated_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\xbf\x04\n" +
 	"\aProduct\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1b\n" +
 	"\tvendor_id\x18\x02 \x01(\x03R\bvendorId\x12\x1f\n" +
@@ -486,14 +606,26 @@ const file_v1_domain_catalog_domain_proto_rawDesc = "" +
 	"created_at\x18\n" +
 	" \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"L\n" +
+	"updated_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x12c\n" +
+	"\x0fcharacteristics\x18\f \x03(\v29.martketplace.vkr.catalog.v1.domain.ProductCharacteristicR\x0fcharacteristics\"L\n" +
 	"\x10ProductAttribute\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +
 	"\x05value\x18\x03 \x01(\tR\x05value\"A\n" +
 	"\x15ProductAttributeInput\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value\"I\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value\"\x93\x01\n" +
+	"\x15ProductCharacteristic\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\x12T\n" +
+	"\n" +
+	"attributes\x18\x03 \x03(\v24.martketplace.vkr.catalog.v1.domain.ProductAttributeR\n" +
+	"attributes\"\x8d\x01\n" +
+	"\x1aProductCharacteristicInput\x12\x14\n" +
+	"\x05title\x18\x01 \x01(\tR\x05title\x12Y\n" +
+	"\n" +
+	"attributes\x18\x02 \x03(\v29.martketplace.vkr.catalog.v1.domain.ProductAttributeInputR\n" +
+	"attributes\"I\n" +
 	"\fProductImage\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x10\n" +
 	"\x03url\x18\x02 \x01(\tR\x03url\x12\x17\n" +
@@ -514,29 +646,34 @@ func file_v1_domain_catalog_domain_proto_rawDescGZIP() []byte {
 	return file_v1_domain_catalog_domain_proto_rawDescData
 }
 
-var file_v1_domain_catalog_domain_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_v1_domain_catalog_domain_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_v1_domain_catalog_domain_proto_goTypes = []any{
-	(*Category)(nil),              // 0: martketplace.vkr.catalog.v1.domain.Category
-	(*Product)(nil),               // 1: martketplace.vkr.catalog.v1.domain.Product
-	(*ProductAttribute)(nil),      // 2: martketplace.vkr.catalog.v1.domain.ProductAttribute
-	(*ProductAttributeInput)(nil), // 3: martketplace.vkr.catalog.v1.domain.ProductAttributeInput
-	(*ProductImage)(nil),          // 4: martketplace.vkr.catalog.v1.domain.ProductImage
-	(*ProductImageInput)(nil),     // 5: martketplace.vkr.catalog.v1.domain.ProductImageInput
-	(*timestamppb.Timestamp)(nil), // 6: google.protobuf.Timestamp
+	(*Category)(nil),                   // 0: martketplace.vkr.catalog.v1.domain.Category
+	(*Product)(nil),                    // 1: martketplace.vkr.catalog.v1.domain.Product
+	(*ProductAttribute)(nil),           // 2: martketplace.vkr.catalog.v1.domain.ProductAttribute
+	(*ProductAttributeInput)(nil),      // 3: martketplace.vkr.catalog.v1.domain.ProductAttributeInput
+	(*ProductCharacteristic)(nil),      // 4: martketplace.vkr.catalog.v1.domain.ProductCharacteristic
+	(*ProductCharacteristicInput)(nil), // 5: martketplace.vkr.catalog.v1.domain.ProductCharacteristicInput
+	(*ProductImage)(nil),               // 6: martketplace.vkr.catalog.v1.domain.ProductImage
+	(*ProductImageInput)(nil),          // 7: martketplace.vkr.catalog.v1.domain.ProductImageInput
+	(*timestamppb.Timestamp)(nil),      // 8: google.protobuf.Timestamp
 }
 var file_v1_domain_catalog_domain_proto_depIdxs = []int32{
-	0, // 0: martketplace.vkr.catalog.v1.domain.Category.children:type_name -> martketplace.vkr.catalog.v1.domain.Category
-	6, // 1: martketplace.vkr.catalog.v1.domain.Category.created_at:type_name -> google.protobuf.Timestamp
-	6, // 2: martketplace.vkr.catalog.v1.domain.Category.updated_at:type_name -> google.protobuf.Timestamp
-	2, // 3: martketplace.vkr.catalog.v1.domain.Product.attributes:type_name -> martketplace.vkr.catalog.v1.domain.ProductAttribute
-	4, // 4: martketplace.vkr.catalog.v1.domain.Product.images:type_name -> martketplace.vkr.catalog.v1.domain.ProductImage
-	6, // 5: martketplace.vkr.catalog.v1.domain.Product.created_at:type_name -> google.protobuf.Timestamp
-	6, // 6: martketplace.vkr.catalog.v1.domain.Product.updated_at:type_name -> google.protobuf.Timestamp
-	7, // [7:7] is the sub-list for method output_type
-	7, // [7:7] is the sub-list for method input_type
-	7, // [7:7] is the sub-list for extension type_name
-	7, // [7:7] is the sub-list for extension extendee
-	0, // [0:7] is the sub-list for field type_name
+	0,  // 0: martketplace.vkr.catalog.v1.domain.Category.children:type_name -> martketplace.vkr.catalog.v1.domain.Category
+	8,  // 1: martketplace.vkr.catalog.v1.domain.Category.created_at:type_name -> google.protobuf.Timestamp
+	8,  // 2: martketplace.vkr.catalog.v1.domain.Category.updated_at:type_name -> google.protobuf.Timestamp
+	2,  // 3: martketplace.vkr.catalog.v1.domain.Product.attributes:type_name -> martketplace.vkr.catalog.v1.domain.ProductAttribute
+	6,  // 4: martketplace.vkr.catalog.v1.domain.Product.images:type_name -> martketplace.vkr.catalog.v1.domain.ProductImage
+	8,  // 5: martketplace.vkr.catalog.v1.domain.Product.created_at:type_name -> google.protobuf.Timestamp
+	8,  // 6: martketplace.vkr.catalog.v1.domain.Product.updated_at:type_name -> google.protobuf.Timestamp
+	4,  // 7: martketplace.vkr.catalog.v1.domain.Product.characteristics:type_name -> martketplace.vkr.catalog.v1.domain.ProductCharacteristic
+	2,  // 8: martketplace.vkr.catalog.v1.domain.ProductCharacteristic.attributes:type_name -> martketplace.vkr.catalog.v1.domain.ProductAttribute
+	3,  // 9: martketplace.vkr.catalog.v1.domain.ProductCharacteristicInput.attributes:type_name -> martketplace.vkr.catalog.v1.domain.ProductAttributeInput
+	10, // [10:10] is the sub-list for method output_type
+	10, // [10:10] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_v1_domain_catalog_domain_proto_init() }
@@ -550,7 +687,7 @@ func file_v1_domain_catalog_domain_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_v1_domain_catalog_domain_proto_rawDesc), len(file_v1_domain_catalog_domain_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

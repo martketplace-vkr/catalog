@@ -107,7 +107,7 @@ func validateCreateProductRequest(req *vendorpb.CreateProductRequest) error {
 		return status.Error(codes.InvalidArgument, "request is required")
 	}
 
-	return validateProductMutation(req.VendorId, req.CategoryId, req.Name, req.Price, req.StockCount, req.Attributes, req.Images)
+	return validateProductMutation(req.VendorId, req.CategoryId, req.Name, req.Price, req.StockCount, req.Attributes, req.Characteristics, req.Images)
 }
 
 func validateUpdateProductRequest(req *vendorpb.UpdateProductRequest) error {
@@ -119,7 +119,7 @@ func validateUpdateProductRequest(req *vendorpb.UpdateProductRequest) error {
 		return status.Error(codes.InvalidArgument, "product_id must be positive")
 	}
 
-	return validateProductMutation(req.VendorId, req.CategoryId, req.Name, req.Price, req.StockCount, req.Attributes, req.Images)
+	return validateProductMutation(req.VendorId, req.CategoryId, req.Name, req.Price, req.StockCount, req.Attributes, req.Characteristics, req.Images)
 }
 
 func validateDeleteProductRequest(req *vendorpb.DeleteProductRequest) error {
@@ -145,6 +145,7 @@ func validateProductMutation(
 	price string,
 	stockCount uint32,
 	attributes []*domainpb.ProductAttributeInput,
+	characteristics []*domainpb.ProductCharacteristicInput,
 	images []*domainpb.ProductImageInput,
 ) error {
 	if vendorID <= 0 {
@@ -172,7 +173,7 @@ func validateProductMutation(
 		return status.Error(codes.InvalidArgument, "price must be a non-negative decimal with up to 2 fractional digits")
 	}
 
-	if err := validateProductAttributes(attributes); err != nil {
+	if err := validateProductCharacteristics(characteristics, attributes); err != nil {
 		return err
 	}
 
@@ -183,12 +184,54 @@ func validateProductMutation(
 	return nil
 }
 
-func validateProductAttributes(attributes []*domainpb.ProductAttributeInput) error {
+func validateProductCharacteristics(characteristics []*domainpb.ProductCharacteristicInput, legacyAttributes []*domainpb.ProductAttributeInput) error {
+	if len(characteristics) == 0 {
+		return validateLegacyProductAttributes(legacyAttributes)
+	}
+
+	for sectionIdx, characteristic := range characteristics {
+		if characteristic == nil {
+			return status.Errorf(codes.InvalidArgument, "characteristics[%d] is required", sectionIdx)
+		}
+
+		if strings.TrimSpace(characteristic.Title) == "" {
+			return status.Errorf(codes.InvalidArgument, "characteristics[%d].title must not be blank", sectionIdx)
+		}
+
+		if len(characteristic.Attributes) == 0 {
+			return status.Errorf(codes.InvalidArgument, "characteristics[%d].attributes must not be empty", sectionIdx)
+		}
+
+		seenNames := make(map[string]struct{}, len(characteristic.Attributes))
+		for attrIdx, attribute := range characteristic.Attributes {
+			if attribute == nil {
+				return status.Errorf(codes.InvalidArgument, "characteristics[%d].attributes[%d] is required", sectionIdx, attrIdx)
+			}
+
+			name := strings.TrimSpace(attribute.Name)
+			if name == "" {
+				return status.Errorf(codes.InvalidArgument, "characteristics[%d].attributes[%d].name must not be blank", sectionIdx, attrIdx)
+			}
+
+			if strings.TrimSpace(attribute.Value) == "" {
+				return status.Errorf(codes.InvalidArgument, "characteristics[%d].attributes[%d].value must not be blank", sectionIdx, attrIdx)
+			}
+
+			if _, exists := seenNames[name]; exists {
+				return status.Errorf(codes.InvalidArgument, "characteristics[%d].attributes[%d].name must be unique within section", sectionIdx, attrIdx)
+			}
+
+			seenNames[name] = struct{}{}
+		}
+	}
+
+	return nil
+}
+
+func validateLegacyProductAttributes(attributes []*domainpb.ProductAttributeInput) error {
 	if len(attributes) == 0 {
 		return nil
 	}
-
-	seenNames := make(map[string]struct{}, len(attributes))
 
 	for idx, attribute := range attributes {
 		if attribute == nil {
@@ -203,12 +246,6 @@ func validateProductAttributes(attributes []*domainpb.ProductAttributeInput) err
 		if strings.TrimSpace(attribute.Value) == "" {
 			return status.Errorf(codes.InvalidArgument, "attributes[%d].value must not be blank", idx)
 		}
-
-		if _, exists := seenNames[name]; exists {
-			return status.Errorf(codes.InvalidArgument, "attributes[%d].name must be unique", idx)
-		}
-
-		seenNames[name] = struct{}{}
 	}
 
 	return nil

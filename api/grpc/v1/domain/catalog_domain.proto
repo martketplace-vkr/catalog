@@ -27,6 +27,7 @@ message Product {
   repeated ProductImage images = 9;
   google.protobuf.Timestamp created_at = 10;
   google.protobuf.Timestamp updated_at = 11;
+  repeated ProductCharacteristic characteristics = 12;
 }
 
 message ProductAttribute {
@@ -38,6 +39,17 @@ message ProductAttribute {
 message ProductAttributeInput {
   string name = 1;
   string value = 2;
+}
+
+message ProductCharacteristic {
+  int64 id = 1;
+  string title = 2;
+  repeated ProductAttribute attributes = 3;
+}
+
+message ProductCharacteristicInput {
+  string title = 1;
+  repeated ProductAttributeInput attributes = 2;
 }
 
 message ProductImage {

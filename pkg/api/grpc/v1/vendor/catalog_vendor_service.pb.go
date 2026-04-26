@@ -424,17 +424,18 @@ func (x *GetProductResponse) GetProduct() *domain.Product {
 }
 
 type CreateProductRequest struct {
-	state         protoimpl.MessageState          `protogen:"open.v1"`
-	VendorId      int64                           `protobuf:"varint,1,opt,name=vendor_id,json=vendorId,proto3" json:"vendor_id,omitempty"`
-	CategoryId    int64                           `protobuf:"varint,2,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
-	Name          string                          `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	Description   string                          `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
-	Price         string                          `protobuf:"bytes,5,opt,name=price,proto3" json:"price,omitempty"`
-	StockCount    uint32                          `protobuf:"varint,6,opt,name=stock_count,json=stockCount,proto3" json:"stock_count,omitempty"`
-	Attributes    []*domain.ProductAttributeInput `protobuf:"bytes,7,rep,name=attributes,proto3" json:"attributes,omitempty"`
-	Images        []*domain.ProductImageInput     `protobuf:"bytes,8,rep,name=images,proto3" json:"images,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState               `protogen:"open.v1"`
+	VendorId        int64                                `protobuf:"varint,1,opt,name=vendor_id,json=vendorId,proto3" json:"vendor_id,omitempty"`
+	CategoryId      int64                                `protobuf:"varint,2,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
+	Name            string                               `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	Description     string                               `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	Price           string                               `protobuf:"bytes,5,opt,name=price,proto3" json:"price,omitempty"`
+	StockCount      uint32                               `protobuf:"varint,6,opt,name=stock_count,json=stockCount,proto3" json:"stock_count,omitempty"`
+	Attributes      []*domain.ProductAttributeInput      `protobuf:"bytes,7,rep,name=attributes,proto3" json:"attributes,omitempty"`
+	Images          []*domain.ProductImageInput          `protobuf:"bytes,8,rep,name=images,proto3" json:"images,omitempty"`
+	Characteristics []*domain.ProductCharacteristicInput `protobuf:"bytes,9,rep,name=characteristics,proto3" json:"characteristics,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *CreateProductRequest) Reset() {
@@ -523,6 +524,13 @@ func (x *CreateProductRequest) GetImages() []*domain.ProductImageInput {
 	return nil
 }
 
+func (x *CreateProductRequest) GetCharacteristics() []*domain.ProductCharacteristicInput {
+	if x != nil {
+		return x.Characteristics
+	}
+	return nil
+}
+
 type CreateProductResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Product       *domain.Product        `protobuf:"bytes,1,opt,name=product,proto3" json:"product,omitempty"`
@@ -569,18 +577,19 @@ func (x *CreateProductResponse) GetProduct() *domain.Product {
 
 // Update replaces the full product payload, including attributes and images.
 type UpdateProductRequest struct {
-	state         protoimpl.MessageState          `protogen:"open.v1"`
-	ProductId     int64                           `protobuf:"varint,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
-	VendorId      int64                           `protobuf:"varint,2,opt,name=vendor_id,json=vendorId,proto3" json:"vendor_id,omitempty"`
-	CategoryId    int64                           `protobuf:"varint,3,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
-	Name          string                          `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
-	Description   string                          `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
-	Price         string                          `protobuf:"bytes,6,opt,name=price,proto3" json:"price,omitempty"`
-	StockCount    uint32                          `protobuf:"varint,7,opt,name=stock_count,json=stockCount,proto3" json:"stock_count,omitempty"`
-	Attributes    []*domain.ProductAttributeInput `protobuf:"bytes,8,rep,name=attributes,proto3" json:"attributes,omitempty"`
-	Images        []*domain.ProductImageInput     `protobuf:"bytes,9,rep,name=images,proto3" json:"images,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState               `protogen:"open.v1"`
+	ProductId       int64                                `protobuf:"varint,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
+	VendorId        int64                                `protobuf:"varint,2,opt,name=vendor_id,json=vendorId,proto3" json:"vendor_id,omitempty"`
+	CategoryId      int64                                `protobuf:"varint,3,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
+	Name            string                               `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
+	Description     string                               `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	Price           string                               `protobuf:"bytes,6,opt,name=price,proto3" json:"price,omitempty"`
+	StockCount      uint32                               `protobuf:"varint,7,opt,name=stock_count,json=stockCount,proto3" json:"stock_count,omitempty"`
+	Attributes      []*domain.ProductAttributeInput      `protobuf:"bytes,8,rep,name=attributes,proto3" json:"attributes,omitempty"`
+	Images          []*domain.ProductImageInput          `protobuf:"bytes,9,rep,name=images,proto3" json:"images,omitempty"`
+	Characteristics []*domain.ProductCharacteristicInput `protobuf:"bytes,10,rep,name=characteristics,proto3" json:"characteristics,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *UpdateProductRequest) Reset() {
@@ -672,6 +681,13 @@ func (x *UpdateProductRequest) GetAttributes() []*domain.ProductAttributeInput {
 func (x *UpdateProductRequest) GetImages() []*domain.ProductImageInput {
 	if x != nil {
 		return x.Images
+	}
+	return nil
+}
+
+func (x *UpdateProductRequest) GetCharacteristics() []*domain.ProductCharacteristicInput {
+	if x != nil {
+		return x.Characteristics
 	}
 	return nil
 }
@@ -839,7 +855,7 @@ const file_v1_vendor_catalog_vendor_service_proto_rawDesc = "" +
 	"\n" +
 	"product_id\x18\x01 \x01(\x03R\tproductId\"[\n" +
 	"\x12GetProductResponse\x12E\n" +
-	"\aproduct\x18\x01 \x01(\v2+.martketplace.vkr.catalog.v1.domain.ProductR\aproduct\"\xeb\x02\n" +
+	"\aproduct\x18\x01 \x01(\v2+.martketplace.vkr.catalog.v1.domain.ProductR\aproduct\"\xd5\x03\n" +
 	"\x14CreateProductRequest\x12\x1b\n" +
 	"\tvendor_id\x18\x01 \x01(\x03R\bvendorId\x12\x1f\n" +
 	"\vcategory_id\x18\x02 \x01(\x03R\n" +
@@ -852,9 +868,10 @@ const file_v1_vendor_catalog_vendor_service_proto_rawDesc = "" +
 	"\n" +
 	"attributes\x18\a \x03(\v29.martketplace.vkr.catalog.v1.domain.ProductAttributeInputR\n" +
 	"attributes\x12M\n" +
-	"\x06images\x18\b \x03(\v25.martketplace.vkr.catalog.v1.domain.ProductImageInputR\x06images\"^\n" +
+	"\x06images\x18\b \x03(\v25.martketplace.vkr.catalog.v1.domain.ProductImageInputR\x06images\x12h\n" +
+	"\x0fcharacteristics\x18\t \x03(\v2>.martketplace.vkr.catalog.v1.domain.ProductCharacteristicInputR\x0fcharacteristics\"^\n" +
 	"\x15CreateProductResponse\x12E\n" +
-	"\aproduct\x18\x01 \x01(\v2+.martketplace.vkr.catalog.v1.domain.ProductR\aproduct\"\x8a\x03\n" +
+	"\aproduct\x18\x01 \x01(\v2+.martketplace.vkr.catalog.v1.domain.ProductR\aproduct\"\xf4\x03\n" +
 	"\x14UpdateProductRequest\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x01 \x01(\x03R\tproductId\x12\x1b\n" +
@@ -869,7 +886,9 @@ const file_v1_vendor_catalog_vendor_service_proto_rawDesc = "" +
 	"\n" +
 	"attributes\x18\b \x03(\v29.martketplace.vkr.catalog.v1.domain.ProductAttributeInputR\n" +
 	"attributes\x12M\n" +
-	"\x06images\x18\t \x03(\v25.martketplace.vkr.catalog.v1.domain.ProductImageInputR\x06images\"^\n" +
+	"\x06images\x18\t \x03(\v25.martketplace.vkr.catalog.v1.domain.ProductImageInputR\x06images\x12h\n" +
+	"\x0fcharacteristics\x18\n" +
+	" \x03(\v2>.martketplace.vkr.catalog.v1.domain.ProductCharacteristicInputR\x0fcharacteristics\"^\n" +
 	"\x15UpdateProductResponse\x12E\n" +
 	"\aproduct\x18\x01 \x01(\v2+.martketplace.vkr.catalog.v1.domain.ProductR\aproduct\"R\n" +
 	"\x14DeleteProductRequest\x12\x1b\n" +
@@ -897,24 +916,25 @@ func file_v1_vendor_catalog_vendor_service_proto_rawDescGZIP() []byte {
 
 var file_v1_vendor_catalog_vendor_service_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_v1_vendor_catalog_vendor_service_proto_goTypes = []any{
-	(*GetVendorProductRequest)(nil),      // 0: martketplace.vkr.catalog.v1.vendor.GetVendorProductRequest
-	(*GetVendorProductResponse)(nil),     // 1: martketplace.vkr.catalog.v1.vendor.GetVendorProductResponse
-	(*GetCategoriesRequest)(nil),         // 2: martketplace.vkr.catalog.v1.vendor.GetCategoriesRequest
-	(*GetCategoriesResponse)(nil),        // 3: martketplace.vkr.catalog.v1.vendor.GetCategoriesResponse
-	(*ListProductsRequest)(nil),          // 4: martketplace.vkr.catalog.v1.vendor.ListProductsRequest
-	(*ListProductsResponse)(nil),         // 5: martketplace.vkr.catalog.v1.vendor.ListProductsResponse
-	(*GetProductRequest)(nil),            // 6: martketplace.vkr.catalog.v1.vendor.GetProductRequest
-	(*GetProductResponse)(nil),           // 7: martketplace.vkr.catalog.v1.vendor.GetProductResponse
-	(*CreateProductRequest)(nil),         // 8: martketplace.vkr.catalog.v1.vendor.CreateProductRequest
-	(*CreateProductResponse)(nil),        // 9: martketplace.vkr.catalog.v1.vendor.CreateProductResponse
-	(*UpdateProductRequest)(nil),         // 10: martketplace.vkr.catalog.v1.vendor.UpdateProductRequest
-	(*UpdateProductResponse)(nil),        // 11: martketplace.vkr.catalog.v1.vendor.UpdateProductResponse
-	(*DeleteProductRequest)(nil),         // 12: martketplace.vkr.catalog.v1.vendor.DeleteProductRequest
-	(*DeleteProductResponse)(nil),        // 13: martketplace.vkr.catalog.v1.vendor.DeleteProductResponse
-	(*domain.Product)(nil),               // 14: martketplace.vkr.catalog.v1.domain.Product
-	(*domain.Category)(nil),              // 15: martketplace.vkr.catalog.v1.domain.Category
-	(*domain.ProductAttributeInput)(nil), // 16: martketplace.vkr.catalog.v1.domain.ProductAttributeInput
-	(*domain.ProductImageInput)(nil),     // 17: martketplace.vkr.catalog.v1.domain.ProductImageInput
+	(*GetVendorProductRequest)(nil),           // 0: martketplace.vkr.catalog.v1.vendor.GetVendorProductRequest
+	(*GetVendorProductResponse)(nil),          // 1: martketplace.vkr.catalog.v1.vendor.GetVendorProductResponse
+	(*GetCategoriesRequest)(nil),              // 2: martketplace.vkr.catalog.v1.vendor.GetCategoriesRequest
+	(*GetCategoriesResponse)(nil),             // 3: martketplace.vkr.catalog.v1.vendor.GetCategoriesResponse
+	(*ListProductsRequest)(nil),               // 4: martketplace.vkr.catalog.v1.vendor.ListProductsRequest
+	(*ListProductsResponse)(nil),              // 5: martketplace.vkr.catalog.v1.vendor.ListProductsResponse
+	(*GetProductRequest)(nil),                 // 6: martketplace.vkr.catalog.v1.vendor.GetProductRequest
+	(*GetProductResponse)(nil),                // 7: martketplace.vkr.catalog.v1.vendor.GetProductResponse
+	(*CreateProductRequest)(nil),              // 8: martketplace.vkr.catalog.v1.vendor.CreateProductRequest
+	(*CreateProductResponse)(nil),             // 9: martketplace.vkr.catalog.v1.vendor.CreateProductResponse
+	(*UpdateProductRequest)(nil),              // 10: martketplace.vkr.catalog.v1.vendor.UpdateProductRequest
+	(*UpdateProductResponse)(nil),             // 11: martketplace.vkr.catalog.v1.vendor.UpdateProductResponse
+	(*DeleteProductRequest)(nil),              // 12: martketplace.vkr.catalog.v1.vendor.DeleteProductRequest
+	(*DeleteProductResponse)(nil),             // 13: martketplace.vkr.catalog.v1.vendor.DeleteProductResponse
+	(*domain.Product)(nil),                    // 14: martketplace.vkr.catalog.v1.domain.Product
+	(*domain.Category)(nil),                   // 15: martketplace.vkr.catalog.v1.domain.Category
+	(*domain.ProductAttributeInput)(nil),      // 16: martketplace.vkr.catalog.v1.domain.ProductAttributeInput
+	(*domain.ProductImageInput)(nil),          // 17: martketplace.vkr.catalog.v1.domain.ProductImageInput
+	(*domain.ProductCharacteristicInput)(nil), // 18: martketplace.vkr.catalog.v1.domain.ProductCharacteristicInput
 }
 var file_v1_vendor_catalog_vendor_service_proto_depIdxs = []int32{
 	14, // 0: martketplace.vkr.catalog.v1.vendor.GetVendorProductResponse.products:type_name -> martketplace.vkr.catalog.v1.domain.Product
@@ -923,23 +943,25 @@ var file_v1_vendor_catalog_vendor_service_proto_depIdxs = []int32{
 	14, // 3: martketplace.vkr.catalog.v1.vendor.GetProductResponse.product:type_name -> martketplace.vkr.catalog.v1.domain.Product
 	16, // 4: martketplace.vkr.catalog.v1.vendor.CreateProductRequest.attributes:type_name -> martketplace.vkr.catalog.v1.domain.ProductAttributeInput
 	17, // 5: martketplace.vkr.catalog.v1.vendor.CreateProductRequest.images:type_name -> martketplace.vkr.catalog.v1.domain.ProductImageInput
-	14, // 6: martketplace.vkr.catalog.v1.vendor.CreateProductResponse.product:type_name -> martketplace.vkr.catalog.v1.domain.Product
-	16, // 7: martketplace.vkr.catalog.v1.vendor.UpdateProductRequest.attributes:type_name -> martketplace.vkr.catalog.v1.domain.ProductAttributeInput
-	17, // 8: martketplace.vkr.catalog.v1.vendor.UpdateProductRequest.images:type_name -> martketplace.vkr.catalog.v1.domain.ProductImageInput
-	14, // 9: martketplace.vkr.catalog.v1.vendor.UpdateProductResponse.product:type_name -> martketplace.vkr.catalog.v1.domain.Product
-	0,  // 10: martketplace.vkr.catalog.v1.vendor.CatalogVendorService.GetVendorProduct:input_type -> martketplace.vkr.catalog.v1.vendor.GetVendorProductRequest
-	8,  // 11: martketplace.vkr.catalog.v1.vendor.CatalogVendorService.CreateProduct:input_type -> martketplace.vkr.catalog.v1.vendor.CreateProductRequest
-	10, // 12: martketplace.vkr.catalog.v1.vendor.CatalogVendorService.UpdateProduct:input_type -> martketplace.vkr.catalog.v1.vendor.UpdateProductRequest
-	12, // 13: martketplace.vkr.catalog.v1.vendor.CatalogVendorService.DeleteProduct:input_type -> martketplace.vkr.catalog.v1.vendor.DeleteProductRequest
-	1,  // 14: martketplace.vkr.catalog.v1.vendor.CatalogVendorService.GetVendorProduct:output_type -> martketplace.vkr.catalog.v1.vendor.GetVendorProductResponse
-	9,  // 15: martketplace.vkr.catalog.v1.vendor.CatalogVendorService.CreateProduct:output_type -> martketplace.vkr.catalog.v1.vendor.CreateProductResponse
-	11, // 16: martketplace.vkr.catalog.v1.vendor.CatalogVendorService.UpdateProduct:output_type -> martketplace.vkr.catalog.v1.vendor.UpdateProductResponse
-	13, // 17: martketplace.vkr.catalog.v1.vendor.CatalogVendorService.DeleteProduct:output_type -> martketplace.vkr.catalog.v1.vendor.DeleteProductResponse
-	14, // [14:18] is the sub-list for method output_type
-	10, // [10:14] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	18, // 6: martketplace.vkr.catalog.v1.vendor.CreateProductRequest.characteristics:type_name -> martketplace.vkr.catalog.v1.domain.ProductCharacteristicInput
+	14, // 7: martketplace.vkr.catalog.v1.vendor.CreateProductResponse.product:type_name -> martketplace.vkr.catalog.v1.domain.Product
+	16, // 8: martketplace.vkr.catalog.v1.vendor.UpdateProductRequest.attributes:type_name -> martketplace.vkr.catalog.v1.domain.ProductAttributeInput
+	17, // 9: martketplace.vkr.catalog.v1.vendor.UpdateProductRequest.images:type_name -> martketplace.vkr.catalog.v1.domain.ProductImageInput
+	18, // 10: martketplace.vkr.catalog.v1.vendor.UpdateProductRequest.characteristics:type_name -> martketplace.vkr.catalog.v1.domain.ProductCharacteristicInput
+	14, // 11: martketplace.vkr.catalog.v1.vendor.UpdateProductResponse.product:type_name -> martketplace.vkr.catalog.v1.domain.Product
+	0,  // 12: martketplace.vkr.catalog.v1.vendor.CatalogVendorService.GetVendorProduct:input_type -> martketplace.vkr.catalog.v1.vendor.GetVendorProductRequest
+	8,  // 13: martketplace.vkr.catalog.v1.vendor.CatalogVendorService.CreateProduct:input_type -> martketplace.vkr.catalog.v1.vendor.CreateProductRequest
+	10, // 14: martketplace.vkr.catalog.v1.vendor.CatalogVendorService.UpdateProduct:input_type -> martketplace.vkr.catalog.v1.vendor.UpdateProductRequest
+	12, // 15: martketplace.vkr.catalog.v1.vendor.CatalogVendorService.DeleteProduct:input_type -> martketplace.vkr.catalog.v1.vendor.DeleteProductRequest
+	1,  // 16: martketplace.vkr.catalog.v1.vendor.CatalogVendorService.GetVendorProduct:output_type -> martketplace.vkr.catalog.v1.vendor.GetVendorProductResponse
+	9,  // 17: martketplace.vkr.catalog.v1.vendor.CatalogVendorService.CreateProduct:output_type -> martketplace.vkr.catalog.v1.vendor.CreateProductResponse
+	11, // 18: martketplace.vkr.catalog.v1.vendor.CatalogVendorService.UpdateProduct:output_type -> martketplace.vkr.catalog.v1.vendor.UpdateProductResponse
+	13, // 19: martketplace.vkr.catalog.v1.vendor.CatalogVendorService.DeleteProduct:output_type -> martketplace.vkr.catalog.v1.vendor.DeleteProductResponse
+	16, // [16:20] is the sub-list for method output_type
+	12, // [12:16] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_v1_vendor_catalog_vendor_service_proto_init() }

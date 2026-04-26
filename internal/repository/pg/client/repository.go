@@ -183,7 +183,7 @@ func (r *repository) CreateProduct(ctx context.Context, req dto.CreateProductReq
 		return product, err
 	}
 
-	if err = r.replaceProductAttributes(ctx, productID, req.Attributes); err != nil {
+	if err = r.replaceProductCharacteristics(ctx, productID, req.Characteristics, req.Attributes); err != nil {
 		return product, err
 	}
 
@@ -225,7 +225,7 @@ func (r *repository) UpdateProduct(ctx context.Context, req dto.UpdateProductReq
 		return product, err
 	}
 
-	if err = r.replaceProductAttributes(ctx, productID, req.Attributes); err != nil {
+	if err = r.replaceProductCharacteristics(ctx, productID, req.Characteristics, req.Attributes); err != nil {
 		return product, err
 	}
 
@@ -248,11 +248,18 @@ func (r *repository) DeleteProduct(ctx context.Context, req dto.DeleteProductReq
 	return r.ctxGetter.DefaultTrOrDB(ctx, r.db).GetContext(ctx, &productID, query, req.ProductID, req.VendorID)
 }
 
-type productAttributeRow struct {
+type productCharacteristicRow struct {
 	ProductID int64  `db:"product_id"`
 	ID        int64  `db:"id"`
-	Name      string `db:"name"`
-	Value     string `db:"value"`
+	Title     string `db:"title"`
+}
+
+type productCharacteristicAttributeRow struct {
+	ProductID        int64  `db:"product_id"`
+	CharacteristicID int64  `db:"characteristic_id"`
+	ID               int64  `db:"id"`
+	Name             string `db:"name"`
+	Value            string `db:"value"`
 }
 
 type productImageRow struct {
@@ -271,18 +278,46 @@ func (r *repository) loadProductsRelations(ctx context.Context, products domain.
 		productIndexByID[product.ID] = idx
 	}
 
-	attributes, err := r.selectProductAttributes(ctx, productIDs)
+	characteristics, err := r.selectProductCharacteristics(ctx, productIDs)
+	if err != nil {
+		return err
+	}
+
+	characteristicIndexByID := make(map[int64]map[int64]int, len(products))
+	for _, characteristic := range characteristics {
+		productIdx := productIndexByID[characteristic.ProductID]
+		products[productIdx].Characteristics = append(products[productIdx].Characteristics, domain.ProductCharacteristic{
+			ID:         characteristic.ID,
+			Title:      characteristic.Title,
+			Attributes: domain.ProductAttributeList{},
+		})
+
+		if characteristicIndexByID[characteristic.ProductID] == nil {
+			characteristicIndexByID[characteristic.ProductID] = make(map[int64]int)
+		}
+
+		characteristicIndexByID[characteristic.ProductID][characteristic.ID] = len(products[productIdx].Characteristics) - 1
+	}
+
+	attributes, err := r.selectProductCharacteristicAttributes(ctx, productIDs)
 	if err != nil {
 		return err
 	}
 
 	for _, attribute := range attributes {
 		productIdx := productIndexByID[attribute.ProductID]
-		products[productIdx].Attributes = append(products[productIdx].Attributes, domain.ProductAttribute{
+		characteristicIdx := characteristicIndexByID[attribute.ProductID][attribute.CharacteristicID]
+		nextAttribute := domain.ProductAttribute{
 			ID:    attribute.ID,
 			Name:  attribute.Name,
 			Value: attribute.Value,
-		})
+		}
+
+		products[productIdx].Characteristics[characteristicIdx].Attributes = append(
+			products[productIdx].Characteristics[characteristicIdx].Attributes,
+			nextAttribute,
+		)
+		products[productIdx].Attributes = append(products[productIdx].Attributes, nextAttribute)
 	}
 
 	images, err := r.selectProductImages(ctx, productIDs)
@@ -302,7 +337,7 @@ func (r *repository) loadProductsRelations(ctx context.Context, products domain.
 	return nil
 }
 
-func (r *repository) selectProductAttributes(ctx context.Context, productIDs []int64) ([]productAttributeRow, error) {
+func (r *repository) selectProductCharacteristics(ctx context.Context, productIDs []int64) ([]productCharacteristicRow, error) {
 	if len(productIDs) == 0 {
 		return nil, nil
 	}
@@ -311,11 +346,10 @@ func (r *repository) selectProductAttributes(ctx context.Context, productIDs []i
 		select
 			id,
 			product_id,
-			attribute_name as name,
-			attribute_value as value
-		from product_attributes
+			title
+		from product_characteristics
 		where product_id in (?)
-		order by id
+		order by product_id, sort_order, id
 	`, productIDs)
 	if err != nil {
 		return nil, err
@@ -323,7 +357,39 @@ func (r *repository) selectProductAttributes(ctx context.Context, productIDs []i
 
 	query = r.db.Rebind(query)
 
-	var rows []productAttributeRow
+	var rows []productCharacteristicRow
+	err = r.ctxGetter.DefaultTrOrDB(ctx, r.db).SelectContext(ctx, &rows, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	return rows, nil
+}
+
+func (r *repository) selectProductCharacteristicAttributes(ctx context.Context, productIDs []int64) ([]productCharacteristicAttributeRow, error) {
+	if len(productIDs) == 0 {
+		return nil, nil
+	}
+
+	query, args, err := sqlx.In(`
+		select
+			pca.id,
+			pc.product_id,
+			pca.characteristic_id,
+			pca.attribute_name as name,
+			pca.attribute_value as value
+		from product_characteristic_attributes pca
+		join product_characteristics pc on pc.id = pca.characteristic_id
+		where pc.product_id in (?)
+		order by pc.product_id, pca.characteristic_id, pca.sort_order, pca.id
+	`, productIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	query = r.db.Rebind(query)
+
+	var rows []productCharacteristicAttributeRow
 	err = r.ctxGetter.DefaultTrOrDB(ctx, r.db).SelectContext(ctx, &rows, query, args...)
 	if err != nil {
 		return nil, err
@@ -362,37 +428,89 @@ func (r *repository) selectProductImages(ctx context.Context, productIDs []int64
 	return rows, nil
 }
 
-func (r *repository) replaceProductAttributes(
+func (r *repository) replaceProductCharacteristics(
 	ctx context.Context,
 	productID int64,
-	attributes []dto.ProductAttributeInput,
+	characteristics []dto.ProductCharacteristicInput,
+	legacyAttributes []dto.ProductAttributeInput,
 ) error {
 	db := r.ctxGetter.DefaultTrOrDB(ctx, r.db)
 
-	if _, err := db.ExecContext(ctx, `delete from product_attributes where product_id = $1`, productID); err != nil {
+	if _, err := db.ExecContext(ctx, `delete from product_characteristics where product_id = $1`, productID); err != nil {
 		return err
 	}
 
-	if len(attributes) == 0 {
+	if len(characteristics) == 0 {
+		characteristics = legacyCharacteristicsFromAttributes(legacyAttributes)
+	}
+
+	if len(characteristics) == 0 {
 		return nil
 	}
 
-	query := `
-		insert into product_attributes (
+	characteristicQuery := `
+		insert into product_characteristics (
 			product_id,
-			attribute_name,
-			attribute_value
+			title,
+			sort_order
 		)
 		values ($1, $2, $3)
+		returning id
 	`
 
-	for _, attribute := range attributes {
-		if _, err := db.ExecContext(ctx, query, productID, attribute.Name, attribute.Value); err != nil {
+	attributeQuery := `
+		insert into product_characteristic_attributes (
+			characteristic_id,
+			attribute_name,
+			attribute_value,
+			sort_order
+		)
+		values ($1, $2, $3, $4)
+	`
+
+	for sectionIndex, characteristic := range characteristics {
+		var characteristicID int64
+		if err := db.GetContext(ctx, &characteristicID, characteristicQuery, productID, characteristic.Title, sectionIndex); err != nil {
 			return err
+		}
+
+		for attributeIndex, attribute := range characteristic.Attributes {
+			if _, err := db.ExecContext(
+				ctx,
+				attributeQuery,
+				characteristicID,
+				attribute.Name,
+				attribute.Value,
+				attributeIndex,
+			); err != nil {
+				return err
+			}
 		}
 	}
 
 	return nil
+}
+
+func legacyCharacteristicsFromAttributes(attributes []dto.ProductAttributeInput) []dto.ProductCharacteristicInput {
+	if len(attributes) == 0 {
+		return nil
+	}
+
+	result := []dto.ProductCharacteristicInput{
+		{
+			Title:      "Основная информация",
+			Attributes: make([]dto.ProductAttributeInput, 0, len(attributes)),
+		},
+	}
+
+	for _, attribute := range attributes {
+		result[0].Attributes = append(result[0].Attributes, dto.ProductAttributeInput{
+			Name:  attribute.Name,
+			Value: attribute.Value,
+		})
+	}
+
+	return result
 }
 
 func (r *repository) replaceProductImages(

@@ -68,6 +68,20 @@ type productAttributeRow struct {
 	Value     string `db:"value"`
 }
 
+type productCharacteristicRow struct {
+	ProductID int64  `db:"product_id"`
+	ID        int64  `db:"id"`
+	Title     string `db:"title"`
+}
+
+type productCharacteristicAttributeRow struct {
+	ProductID        int64  `db:"product_id"`
+	CharacteristicID int64  `db:"characteristic_id"`
+	ID               int64  `db:"id"`
+	Name             string `db:"name"`
+	Value            string `db:"value"`
+}
+
 type productImageRow struct {
 	ProductID int64  `db:"product_id"`
 	ID        int64  `db:"id"`
@@ -84,18 +98,46 @@ func (r *repository) loadProductsRelations(ctx context.Context, products domain.
 		productIndexByID[product.ID] = idx
 	}
 
-	attributes, err := r.selectProductAttributes(ctx, productIDs)
+	characteristics, err := r.selectProductCharacteristics(ctx, productIDs)
+	if err != nil {
+		return err
+	}
+
+	characteristicIndexByID := make(map[int64]map[int64]int, len(products))
+	for _, characteristic := range characteristics {
+		productIdx := productIndexByID[characteristic.ProductID]
+		products[productIdx].Characteristics = append(products[productIdx].Characteristics, domain.ProductCharacteristic{
+			ID:         characteristic.ID,
+			Title:      characteristic.Title,
+			Attributes: domain.ProductAttributeList{},
+		})
+
+		if characteristicIndexByID[characteristic.ProductID] == nil {
+			characteristicIndexByID[characteristic.ProductID] = make(map[int64]int)
+		}
+
+		characteristicIndexByID[characteristic.ProductID][characteristic.ID] = len(products[productIdx].Characteristics) - 1
+	}
+
+	attributes, err := r.selectProductCharacteristicAttributes(ctx, productIDs)
 	if err != nil {
 		return err
 	}
 
 	for _, attribute := range attributes {
 		productIdx := productIndexByID[attribute.ProductID]
-		products[productIdx].Attributes = append(products[productIdx].Attributes, domain.ProductAttribute{
+		characteristicIdx := characteristicIndexByID[attribute.ProductID][attribute.CharacteristicID]
+		nextAttribute := domain.ProductAttribute{
 			ID:    attribute.ID,
 			Name:  attribute.Name,
 			Value: attribute.Value,
-		})
+		}
+
+		products[productIdx].Characteristics[characteristicIdx].Attributes = append(
+			products[productIdx].Characteristics[characteristicIdx].Attributes,
+			nextAttribute,
+		)
+		products[productIdx].Attributes = append(products[productIdx].Attributes, nextAttribute)
 	}
 
 	images, err := r.selectProductImages(ctx, productIDs)
@@ -115,7 +157,7 @@ func (r *repository) loadProductsRelations(ctx context.Context, products domain.
 	return nil
 }
 
-func (r *repository) selectProductAttributes(ctx context.Context, productIDs []int64) ([]productAttributeRow, error) {
+func (r *repository) selectProductCharacteristics(ctx context.Context, productIDs []int64) ([]productCharacteristicRow, error) {
 	if len(productIDs) == 0 {
 		return nil, nil
 	}
@@ -124,11 +166,10 @@ func (r *repository) selectProductAttributes(ctx context.Context, productIDs []i
 		select
 			id,
 			product_id,
-			attribute_name as name,
-			attribute_value as value
-		from product_attributes
+			title
+		from product_characteristics
 		where product_id in (?)
-		order by id
+		order by product_id, sort_order, id
 	`, productIDs)
 	if err != nil {
 		return nil, err
@@ -136,7 +177,39 @@ func (r *repository) selectProductAttributes(ctx context.Context, productIDs []i
 
 	query = r.db.Rebind(query)
 
-	var rows []productAttributeRow
+	var rows []productCharacteristicRow
+	err = r.ctxGetter.DefaultTrOrDB(ctx, r.db).SelectContext(ctx, &rows, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	return rows, nil
+}
+
+func (r *repository) selectProductCharacteristicAttributes(ctx context.Context, productIDs []int64) ([]productCharacteristicAttributeRow, error) {
+	if len(productIDs) == 0 {
+		return nil, nil
+	}
+
+	query, args, err := sqlx.In(`
+		select
+			pca.id,
+			pc.product_id,
+			pca.characteristic_id,
+			pca.attribute_name as name,
+			pca.attribute_value as value
+		from product_characteristic_attributes pca
+		join product_characteristics pc on pc.id = pca.characteristic_id
+		where pc.product_id in (?)
+		order by pc.product_id, pca.characteristic_id, pca.sort_order, pca.id
+	`, productIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	query = r.db.Rebind(query)
+
+	var rows []productCharacteristicAttributeRow
 	err = r.ctxGetter.DefaultTrOrDB(ctx, r.db).SelectContext(ctx, &rows, query, args...)
 	if err != nil {
 		return nil, err
