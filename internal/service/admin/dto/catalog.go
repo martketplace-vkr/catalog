@@ -17,6 +17,10 @@ type UpdateCategoryRequest struct {
 	ParentID   *int64
 }
 
+type UpdateExchangeRateRequest struct {
+	RubPerUSDT string
+}
+
 func CreateCategoryRequestFromProto(req *adminpb.CreateCategoryRequest) CreateCategoryRequest {
 	if req == nil {
 		return CreateCategoryRequest{}
@@ -37,5 +41,15 @@ func UpdateCategoryRequestFromProto(req *adminpb.UpdateCategoryRequest) UpdateCa
 		CategoryID: req.CategoryId,
 		Name:       strings.TrimSpace(req.Name),
 		ParentID:   req.ParentId,
+	}
+}
+
+func UpdateExchangeRateRequestFromProto(req *adminpb.UpdateUSDTExchangeRateRequest) UpdateExchangeRateRequest {
+	if req == nil {
+		return UpdateExchangeRateRequest{}
+	}
+
+	return UpdateExchangeRateRequest{
+		RubPerUSDT: strings.TrimSpace(req.RubPerUsdt),
 	}
 }

@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"strings"
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
 	"github.com/jmoiron/sqlx"
@@ -9,6 +10,28 @@ import (
 	"github.com/martketplace-vkr/catalog/domain"
 	"github.com/martketplace-vkr/catalog/internal/service/client/dto"
 )
+
+const productSelectFields = `
+	p.id,
+	p.vendor_id,
+	p.category_id,
+	p.name,
+	p.description,
+	p.price::text as price,
+	p.accepts_crypto,
+	p.crypto_pricing_mode,
+	coalesce(p.crypto_price_usdt::text, '') as crypto_price_usdt,
+	coalesce(case
+		when p.accepts_crypto and p.crypto_pricing_mode = 'fixed_usdt' then p.crypto_price_usdt::text
+		when p.accepts_crypto and p.crypto_pricing_mode = 'rub_rate' and er.rub_per_usdt is not null
+			then round((p.price / er.rub_per_usdt)::numeric, 8)::text
+		else ''
+	end, '') as effective_usdt_price,
+	coalesce(er.rub_per_usdt::text, '') as rub_per_usdt,
+	p.stock_count,
+	p.created_at,
+	p.updated_at
+`
 
 type repository struct {
 	ctxGetter *trmsqlx.CtxGetter
@@ -44,19 +67,11 @@ func (r *repository) SelectCategories(ctx context.Context) (categories domain.Ca
 
 func (r *repository) SelectVendorProducts(ctx context.Context, vendorID int64) (products domain.ProductList, err error) {
 	query := `
-		select
-			id,
-			vendor_id,
-			category_id,
-			name,
-			description,
-			price::text as price,
-			stock_count,
-			created_at,
-			updated_at
-		from products
-		where vendor_id = $1
-		order by id
+		select ` + productSelectFields + `
+		from products p
+		left join platform_exchange_rates er on er.currency_pair = 'RUB_USDT'
+		where p.vendor_id = $1
+		order by p.id
 	`
 
 	err = r.ctxGetter.DefaultTrOrDB(ctx, r.db).SelectContext(ctx, &products, query, vendorID)
@@ -81,21 +96,13 @@ func (r *repository) SelectProducts(
 	limit uint32,
 ) (products domain.ProductList, err error) {
 	query := `
-		select
-			id,
-			vendor_id,
-			category_id,
-			name,
-			description,
-			price::text as price,
-			stock_count,
-			created_at,
-			updated_at
-		from products
-		where ($1 = 0 or category_id = $1)
-			and ($2 = 0 or vendor_id = $2)
-			and id > $3
-		order by id
+		select ` + productSelectFields + `
+		from products p
+		left join platform_exchange_rates er on er.currency_pair = 'RUB_USDT'
+		where ($1 = 0 or p.category_id = $1)
+			and ($2 = 0 or p.vendor_id = $2)
+			and p.id > $3
+		order by p.id
 		limit $4
 	`
 
@@ -125,18 +132,10 @@ func (r *repository) SelectProducts(
 
 func (r *repository) SelectProduct(ctx context.Context, productID int64) (product domain.Product, err error) {
 	query := `
-		select
-			id,
-			vendor_id,
-			category_id,
-			name,
-			description,
-			price::text as price,
-			stock_count,
-			created_at,
-			updated_at
-		from products
-		where id = $1
+		select ` + productSelectFields + `
+		from products p
+		left join platform_exchange_rates er on er.currency_pair = 'RUB_USDT'
+		where p.id = $1
 	`
 
 	err = r.ctxGetter.DefaultTrOrDB(ctx, r.db).GetContext(ctx, &product, query, productID)
@@ -153,6 +152,13 @@ func (r *repository) SelectProduct(ctx context.Context, productID int64) (produc
 	return products[0], nil
 }
 
+func (r *repository) HasUSDTExchangeRate(ctx context.Context) (bool, error) {
+	query := `select exists(select 1 from platform_exchange_rates where currency_pair = 'RUB_USDT')`
+	var exists bool
+	err := r.ctxGetter.DefaultTrOrDB(ctx, r.db).GetContext(ctx, &exists, query)
+	return exists, err
+}
+
 func (r *repository) CreateProduct(ctx context.Context, req dto.CreateProductRequest) (product domain.Product, err error) {
 	query := `
 		insert into products (
@@ -161,9 +167,12 @@ func (r *repository) CreateProduct(ctx context.Context, req dto.CreateProductReq
 			name,
 			description,
 			price,
+			accepts_crypto,
+			crypto_pricing_mode,
+			crypto_price_usdt,
 			stock_count
 		)
-		values ($1, $2, $3, $4, $5, $6)
+		values ($1, $2, $3, $4, $5, $6, $7, nullif($8, '')::numeric, $9)
 		returning id
 	`
 
@@ -177,6 +186,9 @@ func (r *repository) CreateProduct(ctx context.Context, req dto.CreateProductReq
 		req.Name,
 		req.Description,
 		req.Price,
+		req.AcceptsCrypto,
+		normalizeCryptoPricingMode(req.AcceptsCrypto, req.CryptoPricingMode),
+		strings.TrimSpace(req.CryptoPriceUSDT),
 		int64(req.StockCount),
 	)
 	if err != nil {
@@ -202,7 +214,10 @@ func (r *repository) UpdateProduct(ctx context.Context, req dto.UpdateProductReq
 			name = $4,
 			description = $5,
 			price = $6,
-			stock_count = $7
+			accepts_crypto = $7,
+			crypto_pricing_mode = $8,
+			crypto_price_usdt = nullif($9, '')::numeric,
+			stock_count = $10
 		where id = $1
 			and vendor_id = $2
 		returning id
@@ -219,6 +234,9 @@ func (r *repository) UpdateProduct(ctx context.Context, req dto.UpdateProductReq
 		req.Name,
 		req.Description,
 		req.Price,
+		req.AcceptsCrypto,
+		normalizeCryptoPricingMode(req.AcceptsCrypto, req.CryptoPricingMode),
+		strings.TrimSpace(req.CryptoPriceUSDT),
 		int64(req.StockCount),
 	)
 	if err != nil {
@@ -246,6 +264,14 @@ func (r *repository) DeleteProduct(ctx context.Context, req dto.DeleteProductReq
 
 	var productID int64
 	return r.ctxGetter.DefaultTrOrDB(ctx, r.db).GetContext(ctx, &productID, query, req.ProductID, req.VendorID)
+}
+
+func normalizeCryptoPricingMode(acceptsCrypto bool, mode string) string {
+	normalized := strings.TrimSpace(mode)
+	if !acceptsCrypto {
+		return "disabled"
+	}
+	return normalized
 }
 
 type productCharacteristicRow struct {

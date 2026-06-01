@@ -19,9 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	CatalogAdminService_CreateCategory_FullMethodName = "/martketplace.vkr.catalog.v1.admin.CatalogAdminService/CreateCategory"
-	CatalogAdminService_UpdateCategory_FullMethodName = "/martketplace.vkr.catalog.v1.admin.CatalogAdminService/UpdateCategory"
-	CatalogAdminService_DeleteCategory_FullMethodName = "/martketplace.vkr.catalog.v1.admin.CatalogAdminService/DeleteCategory"
+	CatalogAdminService_CreateCategory_FullMethodName         = "/martketplace.vkr.catalog.v1.admin.CatalogAdminService/CreateCategory"
+	CatalogAdminService_UpdateCategory_FullMethodName         = "/martketplace.vkr.catalog.v1.admin.CatalogAdminService/UpdateCategory"
+	CatalogAdminService_DeleteCategory_FullMethodName         = "/martketplace.vkr.catalog.v1.admin.CatalogAdminService/DeleteCategory"
+	CatalogAdminService_GetUSDTExchangeRate_FullMethodName    = "/martketplace.vkr.catalog.v1.admin.CatalogAdminService/GetUSDTExchangeRate"
+	CatalogAdminService_UpdateUSDTExchangeRate_FullMethodName = "/martketplace.vkr.catalog.v1.admin.CatalogAdminService/UpdateUSDTExchangeRate"
 )
 
 // CatalogAdminServiceClient is the client API for CatalogAdminService service.
@@ -31,6 +33,8 @@ type CatalogAdminServiceClient interface {
 	CreateCategory(ctx context.Context, in *CreateCategoryRequest, opts ...grpc.CallOption) (*CreateCategoryResponse, error)
 	UpdateCategory(ctx context.Context, in *UpdateCategoryRequest, opts ...grpc.CallOption) (*UpdateCategoryResponse, error)
 	DeleteCategory(ctx context.Context, in *DeleteCategoryRequest, opts ...grpc.CallOption) (*DeleteCategoryResponse, error)
+	GetUSDTExchangeRate(ctx context.Context, in *GetUSDTExchangeRateRequest, opts ...grpc.CallOption) (*GetUSDTExchangeRateResponse, error)
+	UpdateUSDTExchangeRate(ctx context.Context, in *UpdateUSDTExchangeRateRequest, opts ...grpc.CallOption) (*UpdateUSDTExchangeRateResponse, error)
 }
 
 type catalogAdminServiceClient struct {
@@ -71,6 +75,26 @@ func (c *catalogAdminServiceClient) DeleteCategory(ctx context.Context, in *Dele
 	return out, nil
 }
 
+func (c *catalogAdminServiceClient) GetUSDTExchangeRate(ctx context.Context, in *GetUSDTExchangeRateRequest, opts ...grpc.CallOption) (*GetUSDTExchangeRateResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUSDTExchangeRateResponse)
+	err := c.cc.Invoke(ctx, CatalogAdminService_GetUSDTExchangeRate_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *catalogAdminServiceClient) UpdateUSDTExchangeRate(ctx context.Context, in *UpdateUSDTExchangeRateRequest, opts ...grpc.CallOption) (*UpdateUSDTExchangeRateResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateUSDTExchangeRateResponse)
+	err := c.cc.Invoke(ctx, CatalogAdminService_UpdateUSDTExchangeRate_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CatalogAdminServiceServer is the server API for CatalogAdminService service.
 // All implementations must embed UnimplementedCatalogAdminServiceServer
 // for forward compatibility.
@@ -78,6 +102,8 @@ type CatalogAdminServiceServer interface {
 	CreateCategory(context.Context, *CreateCategoryRequest) (*CreateCategoryResponse, error)
 	UpdateCategory(context.Context, *UpdateCategoryRequest) (*UpdateCategoryResponse, error)
 	DeleteCategory(context.Context, *DeleteCategoryRequest) (*DeleteCategoryResponse, error)
+	GetUSDTExchangeRate(context.Context, *GetUSDTExchangeRateRequest) (*GetUSDTExchangeRateResponse, error)
+	UpdateUSDTExchangeRate(context.Context, *UpdateUSDTExchangeRateRequest) (*UpdateUSDTExchangeRateResponse, error)
 	mustEmbedUnimplementedCatalogAdminServiceServer()
 }
 
@@ -96,6 +122,12 @@ func (UnimplementedCatalogAdminServiceServer) UpdateCategory(context.Context, *U
 }
 func (UnimplementedCatalogAdminServiceServer) DeleteCategory(context.Context, *DeleteCategoryRequest) (*DeleteCategoryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteCategory not implemented")
+}
+func (UnimplementedCatalogAdminServiceServer) GetUSDTExchangeRate(context.Context, *GetUSDTExchangeRateRequest) (*GetUSDTExchangeRateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUSDTExchangeRate not implemented")
+}
+func (UnimplementedCatalogAdminServiceServer) UpdateUSDTExchangeRate(context.Context, *UpdateUSDTExchangeRateRequest) (*UpdateUSDTExchangeRateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUSDTExchangeRate not implemented")
 }
 func (UnimplementedCatalogAdminServiceServer) mustEmbedUnimplementedCatalogAdminServiceServer() {}
 func (UnimplementedCatalogAdminServiceServer) testEmbeddedByValue()                             {}
@@ -172,6 +204,42 @@ func _CatalogAdminService_DeleteCategory_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CatalogAdminService_GetUSDTExchangeRate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUSDTExchangeRateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CatalogAdminServiceServer).GetUSDTExchangeRate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CatalogAdminService_GetUSDTExchangeRate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CatalogAdminServiceServer).GetUSDTExchangeRate(ctx, req.(*GetUSDTExchangeRateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CatalogAdminService_UpdateUSDTExchangeRate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateUSDTExchangeRateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CatalogAdminServiceServer).UpdateUSDTExchangeRate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CatalogAdminService_UpdateUSDTExchangeRate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CatalogAdminServiceServer).UpdateUSDTExchangeRate(ctx, req.(*UpdateUSDTExchangeRateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CatalogAdminService_ServiceDesc is the grpc.ServiceDesc for CatalogAdminService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -190,6 +258,14 @@ var CatalogAdminService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteCategory",
 			Handler:    _CatalogAdminService_DeleteCategory_Handler,
+		},
+		{
+			MethodName: "GetUSDTExchangeRate",
+			Handler:    _CatalogAdminService_GetUSDTExchangeRate_Handler,
+		},
+		{
+			MethodName: "UpdateUSDTExchangeRate",
+			Handler:    _CatalogAdminService_UpdateUSDTExchangeRate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

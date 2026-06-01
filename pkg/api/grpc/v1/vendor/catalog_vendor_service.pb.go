@@ -424,18 +424,21 @@ func (x *GetProductResponse) GetProduct() *domain.Product {
 }
 
 type CreateProductRequest struct {
-	state           protoimpl.MessageState               `protogen:"open.v1"`
-	VendorId        int64                                `protobuf:"varint,1,opt,name=vendor_id,json=vendorId,proto3" json:"vendor_id,omitempty"`
-	CategoryId      int64                                `protobuf:"varint,2,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
-	Name            string                               `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	Description     string                               `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
-	Price           string                               `protobuf:"bytes,5,opt,name=price,proto3" json:"price,omitempty"`
-	StockCount      uint32                               `protobuf:"varint,6,opt,name=stock_count,json=stockCount,proto3" json:"stock_count,omitempty"`
-	Attributes      []*domain.ProductAttributeInput      `protobuf:"bytes,7,rep,name=attributes,proto3" json:"attributes,omitempty"`
-	Images          []*domain.ProductImageInput          `protobuf:"bytes,8,rep,name=images,proto3" json:"images,omitempty"`
-	Characteristics []*domain.ProductCharacteristicInput `protobuf:"bytes,9,rep,name=characteristics,proto3" json:"characteristics,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	state             protoimpl.MessageState               `protogen:"open.v1"`
+	VendorId          int64                                `protobuf:"varint,1,opt,name=vendor_id,json=vendorId,proto3" json:"vendor_id,omitempty"`
+	CategoryId        int64                                `protobuf:"varint,2,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
+	Name              string                               `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	Description       string                               `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	Price             string                               `protobuf:"bytes,5,opt,name=price,proto3" json:"price,omitempty"`
+	StockCount        uint32                               `protobuf:"varint,6,opt,name=stock_count,json=stockCount,proto3" json:"stock_count,omitempty"`
+	Attributes        []*domain.ProductAttributeInput      `protobuf:"bytes,7,rep,name=attributes,proto3" json:"attributes,omitempty"`
+	Images            []*domain.ProductImageInput          `protobuf:"bytes,8,rep,name=images,proto3" json:"images,omitempty"`
+	Characteristics   []*domain.ProductCharacteristicInput `protobuf:"bytes,9,rep,name=characteristics,proto3" json:"characteristics,omitempty"`
+	AcceptsCrypto     bool                                 `protobuf:"varint,10,opt,name=accepts_crypto,json=acceptsCrypto,proto3" json:"accepts_crypto,omitempty"`
+	CryptoPricingMode string                               `protobuf:"bytes,11,opt,name=crypto_pricing_mode,json=cryptoPricingMode,proto3" json:"crypto_pricing_mode,omitempty"`
+	CryptoPriceUsdt   string                               `protobuf:"bytes,12,opt,name=crypto_price_usdt,json=cryptoPriceUsdt,proto3" json:"crypto_price_usdt,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *CreateProductRequest) Reset() {
@@ -531,6 +534,27 @@ func (x *CreateProductRequest) GetCharacteristics() []*domain.ProductCharacteris
 	return nil
 }
 
+func (x *CreateProductRequest) GetAcceptsCrypto() bool {
+	if x != nil {
+		return x.AcceptsCrypto
+	}
+	return false
+}
+
+func (x *CreateProductRequest) GetCryptoPricingMode() string {
+	if x != nil {
+		return x.CryptoPricingMode
+	}
+	return ""
+}
+
+func (x *CreateProductRequest) GetCryptoPriceUsdt() string {
+	if x != nil {
+		return x.CryptoPriceUsdt
+	}
+	return ""
+}
+
 type CreateProductResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Product       *domain.Product        `protobuf:"bytes,1,opt,name=product,proto3" json:"product,omitempty"`
@@ -577,19 +601,22 @@ func (x *CreateProductResponse) GetProduct() *domain.Product {
 
 // Update replaces the full product payload, including attributes and images.
 type UpdateProductRequest struct {
-	state           protoimpl.MessageState               `protogen:"open.v1"`
-	ProductId       int64                                `protobuf:"varint,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
-	VendorId        int64                                `protobuf:"varint,2,opt,name=vendor_id,json=vendorId,proto3" json:"vendor_id,omitempty"`
-	CategoryId      int64                                `protobuf:"varint,3,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
-	Name            string                               `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
-	Description     string                               `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
-	Price           string                               `protobuf:"bytes,6,opt,name=price,proto3" json:"price,omitempty"`
-	StockCount      uint32                               `protobuf:"varint,7,opt,name=stock_count,json=stockCount,proto3" json:"stock_count,omitempty"`
-	Attributes      []*domain.ProductAttributeInput      `protobuf:"bytes,8,rep,name=attributes,proto3" json:"attributes,omitempty"`
-	Images          []*domain.ProductImageInput          `protobuf:"bytes,9,rep,name=images,proto3" json:"images,omitempty"`
-	Characteristics []*domain.ProductCharacteristicInput `protobuf:"bytes,10,rep,name=characteristics,proto3" json:"characteristics,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	state             protoimpl.MessageState               `protogen:"open.v1"`
+	ProductId         int64                                `protobuf:"varint,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
+	VendorId          int64                                `protobuf:"varint,2,opt,name=vendor_id,json=vendorId,proto3" json:"vendor_id,omitempty"`
+	CategoryId        int64                                `protobuf:"varint,3,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
+	Name              string                               `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
+	Description       string                               `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	Price             string                               `protobuf:"bytes,6,opt,name=price,proto3" json:"price,omitempty"`
+	StockCount        uint32                               `protobuf:"varint,7,opt,name=stock_count,json=stockCount,proto3" json:"stock_count,omitempty"`
+	Attributes        []*domain.ProductAttributeInput      `protobuf:"bytes,8,rep,name=attributes,proto3" json:"attributes,omitempty"`
+	Images            []*domain.ProductImageInput          `protobuf:"bytes,9,rep,name=images,proto3" json:"images,omitempty"`
+	Characteristics   []*domain.ProductCharacteristicInput `protobuf:"bytes,10,rep,name=characteristics,proto3" json:"characteristics,omitempty"`
+	AcceptsCrypto     bool                                 `protobuf:"varint,11,opt,name=accepts_crypto,json=acceptsCrypto,proto3" json:"accepts_crypto,omitempty"`
+	CryptoPricingMode string                               `protobuf:"bytes,12,opt,name=crypto_pricing_mode,json=cryptoPricingMode,proto3" json:"crypto_pricing_mode,omitempty"`
+	CryptoPriceUsdt   string                               `protobuf:"bytes,13,opt,name=crypto_price_usdt,json=cryptoPriceUsdt,proto3" json:"crypto_price_usdt,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *UpdateProductRequest) Reset() {
@@ -690,6 +717,27 @@ func (x *UpdateProductRequest) GetCharacteristics() []*domain.ProductCharacteris
 		return x.Characteristics
 	}
 	return nil
+}
+
+func (x *UpdateProductRequest) GetAcceptsCrypto() bool {
+	if x != nil {
+		return x.AcceptsCrypto
+	}
+	return false
+}
+
+func (x *UpdateProductRequest) GetCryptoPricingMode() string {
+	if x != nil {
+		return x.CryptoPricingMode
+	}
+	return ""
+}
+
+func (x *UpdateProductRequest) GetCryptoPriceUsdt() string {
+	if x != nil {
+		return x.CryptoPriceUsdt
+	}
+	return ""
 }
 
 type UpdateProductResponse struct {
@@ -855,7 +903,7 @@ const file_v1_vendor_catalog_vendor_service_proto_rawDesc = "" +
 	"\n" +
 	"product_id\x18\x01 \x01(\x03R\tproductId\"[\n" +
 	"\x12GetProductResponse\x12E\n" +
-	"\aproduct\x18\x01 \x01(\v2+.martketplace.vkr.catalog.v1.domain.ProductR\aproduct\"\xd5\x03\n" +
+	"\aproduct\x18\x01 \x01(\v2+.martketplace.vkr.catalog.v1.domain.ProductR\aproduct\"\xd8\x04\n" +
 	"\x14CreateProductRequest\x12\x1b\n" +
 	"\tvendor_id\x18\x01 \x01(\x03R\bvendorId\x12\x1f\n" +
 	"\vcategory_id\x18\x02 \x01(\x03R\n" +
@@ -869,9 +917,13 @@ const file_v1_vendor_catalog_vendor_service_proto_rawDesc = "" +
 	"attributes\x18\a \x03(\v29.martketplace.vkr.catalog.v1.domain.ProductAttributeInputR\n" +
 	"attributes\x12M\n" +
 	"\x06images\x18\b \x03(\v25.martketplace.vkr.catalog.v1.domain.ProductImageInputR\x06images\x12h\n" +
-	"\x0fcharacteristics\x18\t \x03(\v2>.martketplace.vkr.catalog.v1.domain.ProductCharacteristicInputR\x0fcharacteristics\"^\n" +
+	"\x0fcharacteristics\x18\t \x03(\v2>.martketplace.vkr.catalog.v1.domain.ProductCharacteristicInputR\x0fcharacteristics\x12%\n" +
+	"\x0eaccepts_crypto\x18\n" +
+	" \x01(\bR\racceptsCrypto\x12.\n" +
+	"\x13crypto_pricing_mode\x18\v \x01(\tR\x11cryptoPricingMode\x12*\n" +
+	"\x11crypto_price_usdt\x18\f \x01(\tR\x0fcryptoPriceUsdt\"^\n" +
 	"\x15CreateProductResponse\x12E\n" +
-	"\aproduct\x18\x01 \x01(\v2+.martketplace.vkr.catalog.v1.domain.ProductR\aproduct\"\xf4\x03\n" +
+	"\aproduct\x18\x01 \x01(\v2+.martketplace.vkr.catalog.v1.domain.ProductR\aproduct\"\xf7\x04\n" +
 	"\x14UpdateProductRequest\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x01 \x01(\x03R\tproductId\x12\x1b\n" +
@@ -888,7 +940,10 @@ const file_v1_vendor_catalog_vendor_service_proto_rawDesc = "" +
 	"attributes\x12M\n" +
 	"\x06images\x18\t \x03(\v25.martketplace.vkr.catalog.v1.domain.ProductImageInputR\x06images\x12h\n" +
 	"\x0fcharacteristics\x18\n" +
-	" \x03(\v2>.martketplace.vkr.catalog.v1.domain.ProductCharacteristicInputR\x0fcharacteristics\"^\n" +
+	" \x03(\v2>.martketplace.vkr.catalog.v1.domain.ProductCharacteristicInputR\x0fcharacteristics\x12%\n" +
+	"\x0eaccepts_crypto\x18\v \x01(\bR\racceptsCrypto\x12.\n" +
+	"\x13crypto_pricing_mode\x18\f \x01(\tR\x11cryptoPricingMode\x12*\n" +
+	"\x11crypto_price_usdt\x18\r \x01(\tR\x0fcryptoPriceUsdt\"^\n" +
 	"\x15UpdateProductResponse\x12E\n" +
 	"\aproduct\x18\x01 \x01(\v2+.martketplace.vkr.catalog.v1.domain.ProductR\aproduct\"R\n" +
 	"\x14DeleteProductRequest\x12\x1b\n" +

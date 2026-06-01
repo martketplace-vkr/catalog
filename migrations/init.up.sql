@@ -20,10 +20,19 @@ create table products (
     name text not null,
     description text not null default '',
     price numeric(10,2) not null check (price >= 0),
+    accepts_crypto boolean not null default false,
+    crypto_pricing_mode text not null default 'disabled'
+        check (crypto_pricing_mode in ('disabled', 'fixed_usdt', 'rub_rate')),
+    crypto_price_usdt numeric(20,8) null check (crypto_price_usdt is null or crypto_price_usdt > 0),
     stock_count integer not null default 0 check (stock_count >= 0),
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now(),
-    constraint products_name_not_blank check (btrim(name) <> '')
+    constraint products_name_not_blank check (btrim(name) <> ''),
+    constraint products_crypto_consistency check (
+        (accepts_crypto = false and crypto_pricing_mode = 'disabled' and crypto_price_usdt is null)
+        or (accepts_crypto = true and crypto_pricing_mode = 'fixed_usdt' and crypto_price_usdt is not null)
+        or (accepts_crypto = true and crypto_pricing_mode = 'rub_rate' and crypto_price_usdt is null)
+    )
 );
 
 create index products_vendor_id_idx
@@ -31,6 +40,12 @@ create index products_vendor_id_idx
 
 create index products_category_id_idx
     on products (category_id);
+
+create table platform_exchange_rates (
+    currency_pair text primary key,
+    rub_per_usdt numeric(20,8) not null check (rub_per_usdt > 0),
+    updated_at timestamptz not null default now()
+);
 
 create table product_attributes (
     id bigserial primary key,
@@ -59,4 +74,3 @@ create index product_images_product_id_idx
 create unique index product_images_one_main_per_product_uidx
     on product_images (product_id)
     where is_main;
-

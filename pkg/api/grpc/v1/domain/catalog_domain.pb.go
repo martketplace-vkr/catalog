@@ -107,21 +107,26 @@ func (x *Category) GetUpdatedAt() *timestamppb.Timestamp {
 }
 
 type Product struct {
-	state           protoimpl.MessageState   `protogen:"open.v1"`
-	Id              int64                    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	VendorId        int64                    `protobuf:"varint,2,opt,name=vendor_id,json=vendorId,proto3" json:"vendor_id,omitempty"`
-	CategoryId      int64                    `protobuf:"varint,3,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
-	Name            string                   `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
-	Description     string                   `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
-	Price           string                   `protobuf:"bytes,6,opt,name=price,proto3" json:"price,omitempty"`
-	StockCount      uint32                   `protobuf:"varint,7,opt,name=stock_count,json=stockCount,proto3" json:"stock_count,omitempty"`
-	Attributes      []*ProductAttribute      `protobuf:"bytes,8,rep,name=attributes,proto3" json:"attributes,omitempty"`
-	Images          []*ProductImage          `protobuf:"bytes,9,rep,name=images,proto3" json:"images,omitempty"`
-	CreatedAt       *timestamppb.Timestamp   `protobuf:"bytes,10,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt       *timestamppb.Timestamp   `protobuf:"bytes,11,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
-	Characteristics []*ProductCharacteristic `protobuf:"bytes,12,rep,name=characteristics,proto3" json:"characteristics,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	state              protoimpl.MessageState   `protogen:"open.v1"`
+	Id                 int64                    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	VendorId           int64                    `protobuf:"varint,2,opt,name=vendor_id,json=vendorId,proto3" json:"vendor_id,omitempty"`
+	CategoryId         int64                    `protobuf:"varint,3,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
+	Name               string                   `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
+	Description        string                   `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	Price              string                   `protobuf:"bytes,6,opt,name=price,proto3" json:"price,omitempty"`
+	StockCount         uint32                   `protobuf:"varint,7,opt,name=stock_count,json=stockCount,proto3" json:"stock_count,omitempty"`
+	Attributes         []*ProductAttribute      `protobuf:"bytes,8,rep,name=attributes,proto3" json:"attributes,omitempty"`
+	Images             []*ProductImage          `protobuf:"bytes,9,rep,name=images,proto3" json:"images,omitempty"`
+	CreatedAt          *timestamppb.Timestamp   `protobuf:"bytes,10,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt          *timestamppb.Timestamp   `protobuf:"bytes,11,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	Characteristics    []*ProductCharacteristic `protobuf:"bytes,12,rep,name=characteristics,proto3" json:"characteristics,omitempty"`
+	AcceptsCrypto      bool                     `protobuf:"varint,13,opt,name=accepts_crypto,json=acceptsCrypto,proto3" json:"accepts_crypto,omitempty"`
+	CryptoPricingMode  string                   `protobuf:"bytes,14,opt,name=crypto_pricing_mode,json=cryptoPricingMode,proto3" json:"crypto_pricing_mode,omitempty"`
+	CryptoPriceUsdt    string                   `protobuf:"bytes,15,opt,name=crypto_price_usdt,json=cryptoPriceUsdt,proto3" json:"crypto_price_usdt,omitempty"`
+	EffectiveUsdtPrice string                   `protobuf:"bytes,16,opt,name=effective_usdt_price,json=effectiveUsdtPrice,proto3" json:"effective_usdt_price,omitempty"`
+	RubPerUsdt         string                   `protobuf:"bytes,17,opt,name=rub_per_usdt,json=rubPerUsdt,proto3" json:"rub_per_usdt,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *Product) Reset() {
@@ -236,6 +241,41 @@ func (x *Product) GetCharacteristics() []*ProductCharacteristic {
 		return x.Characteristics
 	}
 	return nil
+}
+
+func (x *Product) GetAcceptsCrypto() bool {
+	if x != nil {
+		return x.AcceptsCrypto
+	}
+	return false
+}
+
+func (x *Product) GetCryptoPricingMode() string {
+	if x != nil {
+		return x.CryptoPricingMode
+	}
+	return ""
+}
+
+func (x *Product) GetCryptoPriceUsdt() string {
+	if x != nil {
+		return x.CryptoPriceUsdt
+	}
+	return ""
+}
+
+func (x *Product) GetEffectiveUsdtPrice() string {
+	if x != nil {
+		return x.EffectiveUsdtPrice
+	}
+	return ""
+}
+
+func (x *Product) GetRubPerUsdt() string {
+	if x != nil {
+		return x.RubPerUsdt
+	}
+	return ""
 }
 
 type ProductAttribute struct {
@@ -587,7 +627,7 @@ const file_v1_domain_catalog_domain_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\xbf\x04\n" +
+	"updated_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\x96\x06\n" +
 	"\aProduct\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1b\n" +
 	"\tvendor_id\x18\x02 \x01(\x03R\bvendorId\x12\x1f\n" +
@@ -607,7 +647,13 @@ const file_v1_domain_catalog_domain_proto_rawDesc = "" +
 	" \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
 	"updated_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x12c\n" +
-	"\x0fcharacteristics\x18\f \x03(\v29.martketplace.vkr.catalog.v1.domain.ProductCharacteristicR\x0fcharacteristics\"L\n" +
+	"\x0fcharacteristics\x18\f \x03(\v29.martketplace.vkr.catalog.v1.domain.ProductCharacteristicR\x0fcharacteristics\x12%\n" +
+	"\x0eaccepts_crypto\x18\r \x01(\bR\racceptsCrypto\x12.\n" +
+	"\x13crypto_pricing_mode\x18\x0e \x01(\tR\x11cryptoPricingMode\x12*\n" +
+	"\x11crypto_price_usdt\x18\x0f \x01(\tR\x0fcryptoPriceUsdt\x120\n" +
+	"\x14effective_usdt_price\x18\x10 \x01(\tR\x12effectiveUsdtPrice\x12 \n" +
+	"\frub_per_usdt\x18\x11 \x01(\tR\n" +
+	"rubPerUsdt\"L\n" +
 	"\x10ProductAttribute\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +

@@ -111,6 +111,38 @@ func (r *repository) DeleteCategory(ctx context.Context, categoryID int64) (dele
 	return deletedCategoryID, nil
 }
 
+func (r *repository) GetUSDTExchangeRate(ctx context.Context) (rate domain.ExchangeRate, err error) {
+	query := `
+		select
+			rub_per_usdt::text as rub_per_usdt,
+			updated_at
+		from platform_exchange_rates
+		where currency_pair = 'RUB_USDT'
+	`
+
+	err = r.ctxGetter.DefaultTrOrDB(ctx, r.db).GetContext(ctx, &rate, query)
+	return rate, err
+}
+
+func (r *repository) UpdateUSDTExchangeRate(ctx context.Context, req dto.UpdateExchangeRateRequest) (rate domain.ExchangeRate, err error) {
+	query := `
+		insert into platform_exchange_rates (
+			currency_pair,
+			rub_per_usdt,
+			updated_at
+		)
+		values ('RUB_USDT', $1, now())
+		on conflict (currency_pair)
+		do update set
+			rub_per_usdt = excluded.rub_per_usdt,
+			updated_at = now()
+		returning rub_per_usdt::text as rub_per_usdt, updated_at
+	`
+
+	err = r.ctxGetter.DefaultTrOrDB(ctx, r.db).GetContext(ctx, &rate, query, req.RubPerUSDT)
+	return rate, err
+}
+
 func (r *repository) selectCategory(ctx context.Context, categoryID int64) (category domain.Category, err error) {
 	query := `
 		select

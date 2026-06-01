@@ -62,15 +62,18 @@ type ProductImageInput struct {
 }
 
 type CreateProductRequest struct {
-	VendorID        int64
-	CategoryID      int64
-	Name            string
-	Description     string
-	Price           string
-	StockCount      uint32
-	Attributes      []ProductAttributeInput
-	Characteristics []ProductCharacteristicInput
-	Images          []ProductImageInput
+	VendorID          int64
+	CategoryID        int64
+	Name              string
+	Description       string
+	Price             string
+	AcceptsCrypto     bool
+	CryptoPricingMode string
+	CryptoPriceUSDT   string
+	StockCount        uint32
+	Attributes        []ProductAttributeInput
+	Characteristics   []ProductCharacteristicInput
+	Images            []ProductImageInput
 }
 
 func CreateProductRequestFromProto(req *vendorpb.CreateProductRequest) CreateProductRequest {
@@ -79,29 +82,35 @@ func CreateProductRequestFromProto(req *vendorpb.CreateProductRequest) CreatePro
 	}
 
 	return CreateProductRequest{
-		VendorID:        req.VendorId,
-		CategoryID:      req.CategoryId,
-		Name:            strings.TrimSpace(req.Name),
-		Description:     req.Description,
-		Price:           strings.TrimSpace(req.Price),
-		StockCount:      req.StockCount,
-		Attributes:      productAttributeInputsFromProto(req.Attributes),
-		Characteristics: productCharacteristicInputsFromProto(req.Characteristics),
-		Images:          productImageInputsFromProto(req.Images),
+		VendorID:          req.VendorId,
+		CategoryID:        req.CategoryId,
+		Name:              strings.TrimSpace(req.Name),
+		Description:       req.Description,
+		Price:             strings.TrimSpace(req.Price),
+		AcceptsCrypto:     req.AcceptsCrypto,
+		CryptoPricingMode: strings.TrimSpace(req.CryptoPricingMode),
+		CryptoPriceUSDT:   strings.TrimSpace(req.CryptoPriceUsdt),
+		StockCount:        req.StockCount,
+		Attributes:        productAttributeInputsFromProto(req.Attributes),
+		Characteristics:   productCharacteristicInputsFromProto(req.Characteristics),
+		Images:            productImageInputsFromProto(req.Images),
 	}
 }
 
 type UpdateProductRequest struct {
-	ProductID       int64
-	VendorID        int64
-	CategoryID      int64
-	Name            string
-	Description     string
-	Price           string
-	StockCount      uint32
-	Attributes      []ProductAttributeInput
-	Characteristics []ProductCharacteristicInput
-	Images          []ProductImageInput
+	ProductID         int64
+	VendorID          int64
+	CategoryID        int64
+	Name              string
+	Description       string
+	Price             string
+	AcceptsCrypto     bool
+	CryptoPricingMode string
+	CryptoPriceUSDT   string
+	StockCount        uint32
+	Attributes        []ProductAttributeInput
+	Characteristics   []ProductCharacteristicInput
+	Images            []ProductImageInput
 }
 
 type DeleteProductRequest struct {
@@ -115,16 +124,19 @@ func UpdateProductRequestFromProto(req *vendorpb.UpdateProductRequest) UpdatePro
 	}
 
 	return UpdateProductRequest{
-		ProductID:       req.ProductId,
-		VendorID:        req.VendorId,
-		CategoryID:      req.CategoryId,
-		Name:            strings.TrimSpace(req.Name),
-		Description:     req.Description,
-		Price:           strings.TrimSpace(req.Price),
-		StockCount:      req.StockCount,
-		Attributes:      productAttributeInputsFromProto(req.Attributes),
-		Characteristics: productCharacteristicInputsFromProto(req.Characteristics),
-		Images:          productImageInputsFromProto(req.Images),
+		ProductID:         req.ProductId,
+		VendorID:          req.VendorId,
+		CategoryID:        req.CategoryId,
+		Name:              strings.TrimSpace(req.Name),
+		Description:       req.Description,
+		Price:             strings.TrimSpace(req.Price),
+		AcceptsCrypto:     req.AcceptsCrypto,
+		CryptoPricingMode: strings.TrimSpace(req.CryptoPricingMode),
+		CryptoPriceUSDT:   strings.TrimSpace(req.CryptoPriceUsdt),
+		StockCount:        req.StockCount,
+		Attributes:        productAttributeInputsFromProto(req.Attributes),
+		Characteristics:   productCharacteristicInputsFromProto(req.Characteristics),
+		Images:            productImageInputsFromProto(req.Images),
 	}
 }
 

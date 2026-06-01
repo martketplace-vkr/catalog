@@ -10,6 +10,8 @@ service CatalogAdminService {
   rpc CreateCategory(CreateCategoryRequest) returns (CreateCategoryResponse);
   rpc UpdateCategory(UpdateCategoryRequest) returns (UpdateCategoryResponse);
   rpc DeleteCategory(DeleteCategoryRequest) returns (DeleteCategoryResponse);
+  rpc GetUSDTExchangeRate(GetUSDTExchangeRateRequest) returns (GetUSDTExchangeRateResponse);
+  rpc UpdateUSDTExchangeRate(UpdateUSDTExchangeRateRequest) returns (UpdateUSDTExchangeRateResponse);
 }
 
 message CreateCategoryRequest {
@@ -39,4 +41,23 @@ message DeleteCategoryRequest {
 
 message DeleteCategoryResponse {
   int64 category_id = 1;
+}
+
+message ExchangeRate {
+  string rub_per_usdt = 1;
+  string updated_at = 2;
+}
+
+message GetUSDTExchangeRateRequest {}
+
+message GetUSDTExchangeRateResponse {
+  ExchangeRate rate = 1;
+}
+
+message UpdateUSDTExchangeRateRequest {
+  string rub_per_usdt = 1;
+}
+
+message UpdateUSDTExchangeRateResponse {
+  ExchangeRate rate = 1;
 }

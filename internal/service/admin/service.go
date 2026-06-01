@@ -69,6 +69,22 @@ func (s *service) DeleteCategory(ctx context.Context, categoryID int64) (deleted
 	return deletedCategoryID, nil
 }
 
+func (s *service) GetUSDTExchangeRate(ctx context.Context) (rate domain.ExchangeRate, err error) {
+	return s.repository.GetUSDTExchangeRate(ctx)
+}
+
+func (s *service) UpdateUSDTExchangeRate(ctx context.Context, req dto.UpdateExchangeRateRequest) (rate domain.ExchangeRate, err error) {
+	err = s.txManager.Do(ctx, func(ctx context.Context) error {
+		rate, err = s.repository.UpdateUSDTExchangeRate(ctx, req)
+		return err
+	})
+	if err != nil {
+		return rate, err
+	}
+
+	return rate, nil
+}
+
 func categoryCreatesCycle(categories domain.CategoryList, categoryID int64, parentID int64) bool {
 	parentByID := make(map[int64]*int64, len(categories))
 

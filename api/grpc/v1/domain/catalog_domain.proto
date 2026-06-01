@@ -28,6 +28,11 @@ message Product {
   google.protobuf.Timestamp created_at = 10;
   google.protobuf.Timestamp updated_at = 11;
   repeated ProductCharacteristic characteristics = 12;
+  bool accepts_crypto = 13;
+  string crypto_pricing_mode = 14;
+  string crypto_price_usdt = 15;
+  string effective_usdt_price = 16;
+  string rub_per_usdt = 17;
 }
 
 message ProductAttribute {

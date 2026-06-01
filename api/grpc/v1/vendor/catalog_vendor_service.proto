@@ -62,6 +62,9 @@ message CreateProductRequest {
   repeated v1.domain.ProductAttributeInput attributes = 7;
   repeated v1.domain.ProductImageInput images = 8;
   repeated v1.domain.ProductCharacteristicInput characteristics = 9;
+  bool accepts_crypto = 10;
+  string crypto_pricing_mode = 11;
+  string crypto_price_usdt = 12;
 }
 
 message CreateProductResponse {
@@ -80,6 +83,9 @@ message UpdateProductRequest {
   repeated v1.domain.ProductAttributeInput attributes = 8;
   repeated v1.domain.ProductImageInput images = 9;
   repeated v1.domain.ProductCharacteristicInput characteristics = 10;
+  bool accepts_crypto = 11;
+  string crypto_pricing_mode = 12;
+  string crypto_price_usdt = 13;
 }
 
 message UpdateProductResponse {

@@ -312,6 +312,226 @@ func (x *DeleteCategoryResponse) GetCategoryId() int64 {
 	return 0
 }
 
+type ExchangeRate struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RubPerUsdt    string                 `protobuf:"bytes,1,opt,name=rub_per_usdt,json=rubPerUsdt,proto3" json:"rub_per_usdt,omitempty"`
+	UpdatedAt     string                 `protobuf:"bytes,2,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ExchangeRate) Reset() {
+	*x = ExchangeRate{}
+	mi := &file_v1_admin_catalog_admin_service_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ExchangeRate) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExchangeRate) ProtoMessage() {}
+
+func (x *ExchangeRate) ProtoReflect() protoreflect.Message {
+	mi := &file_v1_admin_catalog_admin_service_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ExchangeRate.ProtoReflect.Descriptor instead.
+func (*ExchangeRate) Descriptor() ([]byte, []int) {
+	return file_v1_admin_catalog_admin_service_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *ExchangeRate) GetRubPerUsdt() string {
+	if x != nil {
+		return x.RubPerUsdt
+	}
+	return ""
+}
+
+func (x *ExchangeRate) GetUpdatedAt() string {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return ""
+}
+
+type GetUSDTExchangeRateRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUSDTExchangeRateRequest) Reset() {
+	*x = GetUSDTExchangeRateRequest{}
+	mi := &file_v1_admin_catalog_admin_service_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUSDTExchangeRateRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUSDTExchangeRateRequest) ProtoMessage() {}
+
+func (x *GetUSDTExchangeRateRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_v1_admin_catalog_admin_service_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUSDTExchangeRateRequest.ProtoReflect.Descriptor instead.
+func (*GetUSDTExchangeRateRequest) Descriptor() ([]byte, []int) {
+	return file_v1_admin_catalog_admin_service_proto_rawDescGZIP(), []int{7}
+}
+
+type GetUSDTExchangeRateResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Rate          *ExchangeRate          `protobuf:"bytes,1,opt,name=rate,proto3" json:"rate,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUSDTExchangeRateResponse) Reset() {
+	*x = GetUSDTExchangeRateResponse{}
+	mi := &file_v1_admin_catalog_admin_service_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUSDTExchangeRateResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUSDTExchangeRateResponse) ProtoMessage() {}
+
+func (x *GetUSDTExchangeRateResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_v1_admin_catalog_admin_service_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUSDTExchangeRateResponse.ProtoReflect.Descriptor instead.
+func (*GetUSDTExchangeRateResponse) Descriptor() ([]byte, []int) {
+	return file_v1_admin_catalog_admin_service_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *GetUSDTExchangeRateResponse) GetRate() *ExchangeRate {
+	if x != nil {
+		return x.Rate
+	}
+	return nil
+}
+
+type UpdateUSDTExchangeRateRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RubPerUsdt    string                 `protobuf:"bytes,1,opt,name=rub_per_usdt,json=rubPerUsdt,proto3" json:"rub_per_usdt,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateUSDTExchangeRateRequest) Reset() {
+	*x = UpdateUSDTExchangeRateRequest{}
+	mi := &file_v1_admin_catalog_admin_service_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateUSDTExchangeRateRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateUSDTExchangeRateRequest) ProtoMessage() {}
+
+func (x *UpdateUSDTExchangeRateRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_v1_admin_catalog_admin_service_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateUSDTExchangeRateRequest.ProtoReflect.Descriptor instead.
+func (*UpdateUSDTExchangeRateRequest) Descriptor() ([]byte, []int) {
+	return file_v1_admin_catalog_admin_service_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *UpdateUSDTExchangeRateRequest) GetRubPerUsdt() string {
+	if x != nil {
+		return x.RubPerUsdt
+	}
+	return ""
+}
+
+type UpdateUSDTExchangeRateResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Rate          *ExchangeRate          `protobuf:"bytes,1,opt,name=rate,proto3" json:"rate,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateUSDTExchangeRateResponse) Reset() {
+	*x = UpdateUSDTExchangeRateResponse{}
+	mi := &file_v1_admin_catalog_admin_service_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateUSDTExchangeRateResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateUSDTExchangeRateResponse) ProtoMessage() {}
+
+func (x *UpdateUSDTExchangeRateResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_v1_admin_catalog_admin_service_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateUSDTExchangeRateResponse.ProtoReflect.Descriptor instead.
+func (*UpdateUSDTExchangeRateResponse) Descriptor() ([]byte, []int) {
+	return file_v1_admin_catalog_admin_service_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *UpdateUSDTExchangeRateResponse) GetRate() *ExchangeRate {
+	if x != nil {
+		return x.Rate
+	}
+	return nil
+}
+
 var File_v1_admin_catalog_admin_service_proto protoreflect.FileDescriptor
 
 const file_v1_admin_catalog_admin_service_proto_rawDesc = "" +
@@ -338,11 +558,26 @@ const file_v1_admin_catalog_admin_service_proto_rawDesc = "" +
 	"categoryId\"9\n" +
 	"\x16DeleteCategoryResponse\x12\x1f\n" +
 	"\vcategory_id\x18\x01 \x01(\x03R\n" +
-	"categoryId2\xad\x03\n" +
+	"categoryId\"O\n" +
+	"\fExchangeRate\x12 \n" +
+	"\frub_per_usdt\x18\x01 \x01(\tR\n" +
+	"rubPerUsdt\x12\x1d\n" +
+	"\n" +
+	"updated_at\x18\x02 \x01(\tR\tupdatedAt\"\x1c\n" +
+	"\x1aGetUSDTExchangeRateRequest\"b\n" +
+	"\x1bGetUSDTExchangeRateResponse\x12C\n" +
+	"\x04rate\x18\x01 \x01(\v2/.martketplace.vkr.catalog.v1.admin.ExchangeRateR\x04rate\"A\n" +
+	"\x1dUpdateUSDTExchangeRateRequest\x12 \n" +
+	"\frub_per_usdt\x18\x01 \x01(\tR\n" +
+	"rubPerUsdt\"e\n" +
+	"\x1eUpdateUSDTExchangeRateResponse\x12C\n" +
+	"\x04rate\x18\x01 \x01(\v2/.martketplace.vkr.catalog.v1.admin.ExchangeRateR\x04rate2\xe4\x05\n" +
 	"\x13CatalogAdminService\x12\x85\x01\n" +
 	"\x0eCreateCategory\x128.martketplace.vkr.catalog.v1.admin.CreateCategoryRequest\x1a9.martketplace.vkr.catalog.v1.admin.CreateCategoryResponse\x12\x85\x01\n" +
 	"\x0eUpdateCategory\x128.martketplace.vkr.catalog.v1.admin.UpdateCategoryRequest\x1a9.martketplace.vkr.catalog.v1.admin.UpdateCategoryResponse\x12\x85\x01\n" +
-	"\x0eDeleteCategory\x128.martketplace.vkr.catalog.v1.admin.DeleteCategoryRequest\x1a9.martketplace.vkr.catalog.v1.admin.DeleteCategoryResponseBAZ?github.com/martketplace-vkr/catalog/pkg/api/grpc/v1/admin;adminb\x06proto3"
+	"\x0eDeleteCategory\x128.martketplace.vkr.catalog.v1.admin.DeleteCategoryRequest\x1a9.martketplace.vkr.catalog.v1.admin.DeleteCategoryResponse\x12\x94\x01\n" +
+	"\x13GetUSDTExchangeRate\x12=.martketplace.vkr.catalog.v1.admin.GetUSDTExchangeRateRequest\x1a>.martketplace.vkr.catalog.v1.admin.GetUSDTExchangeRateResponse\x12\x9d\x01\n" +
+	"\x16UpdateUSDTExchangeRate\x12@.martketplace.vkr.catalog.v1.admin.UpdateUSDTExchangeRateRequest\x1aA.martketplace.vkr.catalog.v1.admin.UpdateUSDTExchangeRateResponseBAZ?github.com/martketplace-vkr/catalog/pkg/api/grpc/v1/admin;adminb\x06proto3"
 
 var (
 	file_v1_admin_catalog_admin_service_proto_rawDescOnce sync.Once
@@ -356,30 +591,41 @@ func file_v1_admin_catalog_admin_service_proto_rawDescGZIP() []byte {
 	return file_v1_admin_catalog_admin_service_proto_rawDescData
 }
 
-var file_v1_admin_catalog_admin_service_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_v1_admin_catalog_admin_service_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_v1_admin_catalog_admin_service_proto_goTypes = []any{
-	(*CreateCategoryRequest)(nil),  // 0: martketplace.vkr.catalog.v1.admin.CreateCategoryRequest
-	(*CreateCategoryResponse)(nil), // 1: martketplace.vkr.catalog.v1.admin.CreateCategoryResponse
-	(*UpdateCategoryRequest)(nil),  // 2: martketplace.vkr.catalog.v1.admin.UpdateCategoryRequest
-	(*UpdateCategoryResponse)(nil), // 3: martketplace.vkr.catalog.v1.admin.UpdateCategoryResponse
-	(*DeleteCategoryRequest)(nil),  // 4: martketplace.vkr.catalog.v1.admin.DeleteCategoryRequest
-	(*DeleteCategoryResponse)(nil), // 5: martketplace.vkr.catalog.v1.admin.DeleteCategoryResponse
-	(*domain.Category)(nil),        // 6: martketplace.vkr.catalog.v1.domain.Category
+	(*CreateCategoryRequest)(nil),          // 0: martketplace.vkr.catalog.v1.admin.CreateCategoryRequest
+	(*CreateCategoryResponse)(nil),         // 1: martketplace.vkr.catalog.v1.admin.CreateCategoryResponse
+	(*UpdateCategoryRequest)(nil),          // 2: martketplace.vkr.catalog.v1.admin.UpdateCategoryRequest
+	(*UpdateCategoryResponse)(nil),         // 3: martketplace.vkr.catalog.v1.admin.UpdateCategoryResponse
+	(*DeleteCategoryRequest)(nil),          // 4: martketplace.vkr.catalog.v1.admin.DeleteCategoryRequest
+	(*DeleteCategoryResponse)(nil),         // 5: martketplace.vkr.catalog.v1.admin.DeleteCategoryResponse
+	(*ExchangeRate)(nil),                   // 6: martketplace.vkr.catalog.v1.admin.ExchangeRate
+	(*GetUSDTExchangeRateRequest)(nil),     // 7: martketplace.vkr.catalog.v1.admin.GetUSDTExchangeRateRequest
+	(*GetUSDTExchangeRateResponse)(nil),    // 8: martketplace.vkr.catalog.v1.admin.GetUSDTExchangeRateResponse
+	(*UpdateUSDTExchangeRateRequest)(nil),  // 9: martketplace.vkr.catalog.v1.admin.UpdateUSDTExchangeRateRequest
+	(*UpdateUSDTExchangeRateResponse)(nil), // 10: martketplace.vkr.catalog.v1.admin.UpdateUSDTExchangeRateResponse
+	(*domain.Category)(nil),                // 11: martketplace.vkr.catalog.v1.domain.Category
 }
 var file_v1_admin_catalog_admin_service_proto_depIdxs = []int32{
-	6, // 0: martketplace.vkr.catalog.v1.admin.CreateCategoryResponse.category:type_name -> martketplace.vkr.catalog.v1.domain.Category
-	6, // 1: martketplace.vkr.catalog.v1.admin.UpdateCategoryResponse.category:type_name -> martketplace.vkr.catalog.v1.domain.Category
-	0, // 2: martketplace.vkr.catalog.v1.admin.CatalogAdminService.CreateCategory:input_type -> martketplace.vkr.catalog.v1.admin.CreateCategoryRequest
-	2, // 3: martketplace.vkr.catalog.v1.admin.CatalogAdminService.UpdateCategory:input_type -> martketplace.vkr.catalog.v1.admin.UpdateCategoryRequest
-	4, // 4: martketplace.vkr.catalog.v1.admin.CatalogAdminService.DeleteCategory:input_type -> martketplace.vkr.catalog.v1.admin.DeleteCategoryRequest
-	1, // 5: martketplace.vkr.catalog.v1.admin.CatalogAdminService.CreateCategory:output_type -> martketplace.vkr.catalog.v1.admin.CreateCategoryResponse
-	3, // 6: martketplace.vkr.catalog.v1.admin.CatalogAdminService.UpdateCategory:output_type -> martketplace.vkr.catalog.v1.admin.UpdateCategoryResponse
-	5, // 7: martketplace.vkr.catalog.v1.admin.CatalogAdminService.DeleteCategory:output_type -> martketplace.vkr.catalog.v1.admin.DeleteCategoryResponse
-	5, // [5:8] is the sub-list for method output_type
-	2, // [2:5] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	11, // 0: martketplace.vkr.catalog.v1.admin.CreateCategoryResponse.category:type_name -> martketplace.vkr.catalog.v1.domain.Category
+	11, // 1: martketplace.vkr.catalog.v1.admin.UpdateCategoryResponse.category:type_name -> martketplace.vkr.catalog.v1.domain.Category
+	6,  // 2: martketplace.vkr.catalog.v1.admin.GetUSDTExchangeRateResponse.rate:type_name -> martketplace.vkr.catalog.v1.admin.ExchangeRate
+	6,  // 3: martketplace.vkr.catalog.v1.admin.UpdateUSDTExchangeRateResponse.rate:type_name -> martketplace.vkr.catalog.v1.admin.ExchangeRate
+	0,  // 4: martketplace.vkr.catalog.v1.admin.CatalogAdminService.CreateCategory:input_type -> martketplace.vkr.catalog.v1.admin.CreateCategoryRequest
+	2,  // 5: martketplace.vkr.catalog.v1.admin.CatalogAdminService.UpdateCategory:input_type -> martketplace.vkr.catalog.v1.admin.UpdateCategoryRequest
+	4,  // 6: martketplace.vkr.catalog.v1.admin.CatalogAdminService.DeleteCategory:input_type -> martketplace.vkr.catalog.v1.admin.DeleteCategoryRequest
+	7,  // 7: martketplace.vkr.catalog.v1.admin.CatalogAdminService.GetUSDTExchangeRate:input_type -> martketplace.vkr.catalog.v1.admin.GetUSDTExchangeRateRequest
+	9,  // 8: martketplace.vkr.catalog.v1.admin.CatalogAdminService.UpdateUSDTExchangeRate:input_type -> martketplace.vkr.catalog.v1.admin.UpdateUSDTExchangeRateRequest
+	1,  // 9: martketplace.vkr.catalog.v1.admin.CatalogAdminService.CreateCategory:output_type -> martketplace.vkr.catalog.v1.admin.CreateCategoryResponse
+	3,  // 10: martketplace.vkr.catalog.v1.admin.CatalogAdminService.UpdateCategory:output_type -> martketplace.vkr.catalog.v1.admin.UpdateCategoryResponse
+	5,  // 11: martketplace.vkr.catalog.v1.admin.CatalogAdminService.DeleteCategory:output_type -> martketplace.vkr.catalog.v1.admin.DeleteCategoryResponse
+	8,  // 12: martketplace.vkr.catalog.v1.admin.CatalogAdminService.GetUSDTExchangeRate:output_type -> martketplace.vkr.catalog.v1.admin.GetUSDTExchangeRateResponse
+	10, // 13: martketplace.vkr.catalog.v1.admin.CatalogAdminService.UpdateUSDTExchangeRate:output_type -> martketplace.vkr.catalog.v1.admin.UpdateUSDTExchangeRateResponse
+	9,  // [9:14] is the sub-list for method output_type
+	4,  // [4:9] is the sub-list for method input_type
+	4,  // [4:4] is the sub-list for extension type_name
+	4,  // [4:4] is the sub-list for extension extendee
+	0,  // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_v1_admin_catalog_admin_service_proto_init() }
@@ -395,7 +641,7 @@ func file_v1_admin_catalog_admin_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_v1_admin_catalog_admin_service_proto_rawDesc), len(file_v1_admin_catalog_admin_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

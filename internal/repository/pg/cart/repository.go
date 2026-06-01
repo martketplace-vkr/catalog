@@ -20,24 +20,38 @@ func New(db *sqlx.DB, ctxGetter *trmsqlx.CtxGetter) *repository {
 	}
 }
 
+const productSelectFields = `
+	p.id,
+	p.vendor_id,
+	p.category_id,
+	p.name,
+	p.description,
+	p.price::text as price,
+	p.accepts_crypto,
+	p.crypto_pricing_mode,
+	coalesce(p.crypto_price_usdt::text, '') as crypto_price_usdt,
+	coalesce(case
+		when p.accepts_crypto and p.crypto_pricing_mode = 'fixed_usdt' then p.crypto_price_usdt::text
+		when p.accepts_crypto and p.crypto_pricing_mode = 'rub_rate' and er.rub_per_usdt is not null
+			then round((p.price / er.rub_per_usdt)::numeric, 8)::text
+		else ''
+	end, '') as effective_usdt_price,
+	coalesce(er.rub_per_usdt::text, '') as rub_per_usdt,
+	p.stock_count,
+	p.created_at,
+	p.updated_at
+`
+
 func (r *repository) SelectProducts(
 	ctx context.Context,
 	productIds []int64,
 ) (products domain.ProductList, err error) {
 	query := `
-		select
-			id,
-			vendor_id,
-			category_id,
-			name,
-			description,
-			price::text as price,
-			stock_count,
-			created_at,
-			updated_at
-		from products
-		where id = any($1)
-		order by id
+		select ` + productSelectFields + `
+		from products p
+		left join platform_exchange_rates er on er.currency_pair = 'RUB_USDT'
+		where p.id = any($1)
+		order by p.id
 	`
 
 	err = r.ctxGetter.DefaultTrOrDB(ctx, r.db).SelectContext(

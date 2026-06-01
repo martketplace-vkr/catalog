@@ -20,6 +20,7 @@ type (
 			limit uint32,
 		) (products domain.ProductList, err error)
 		SelectProduct(ctx context.Context, productID int64) (product domain.Product, err error)
+		HasUSDTExchangeRate(ctx context.Context) (bool, error)
 		CreateProduct(ctx context.Context, req dto.CreateProductRequest) (product domain.Product, err error)
 		UpdateProduct(ctx context.Context, req dto.UpdateProductRequest) (product domain.Product, err error)
 		DeleteProduct(ctx context.Context, req dto.DeleteProductRequest) error

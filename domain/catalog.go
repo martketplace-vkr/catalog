@@ -40,37 +40,52 @@ func (l CategoryList) ToProto() []*pbdomain.Category {
 }
 
 type Product struct {
-	ID              int64                     `db:"id"`
-	VendorID        int64                     `db:"vendor_id"`
-	CategoryID      int64                     `db:"category_id"`
-	Name            string                    `db:"name"`
-	Description     string                    `db:"description"`
-	Price           string                    `db:"price"`
-	StockCount      int64                     `db:"stock_count"`
-	Attributes      ProductAttributeList      `db:"-"`
-	Characteristics ProductCharacteristicList `db:"-"`
-	Images          ProductImageList          `db:"-"`
-	CreatedAt       time.Time                 `db:"created_at"`
-	UpdatedAt       time.Time                 `db:"updated_at"`
+	ID                 int64                     `db:"id"`
+	VendorID           int64                     `db:"vendor_id"`
+	CategoryID         int64                     `db:"category_id"`
+	Name               string                    `db:"name"`
+	Description        string                    `db:"description"`
+	Price              string                    `db:"price"`
+	AcceptsCrypto      bool                      `db:"accepts_crypto"`
+	CryptoPricingMode  string                    `db:"crypto_pricing_mode"`
+	CryptoPriceUSDT    string                    `db:"crypto_price_usdt"`
+	EffectiveUSDTPrice string                    `db:"effective_usdt_price"`
+	RubPerUSDT         string                    `db:"rub_per_usdt"`
+	StockCount         int64                     `db:"stock_count"`
+	Attributes         ProductAttributeList      `db:"-"`
+	Characteristics    ProductCharacteristicList `db:"-"`
+	Images             ProductImageList          `db:"-"`
+	CreatedAt          time.Time                 `db:"created_at"`
+	UpdatedAt          time.Time                 `db:"updated_at"`
 }
 
 type ProductList []Product
 
 func (p Product) ToProto() *pbdomain.Product {
 	return &pbdomain.Product{
-		Id:              p.ID,
-		VendorId:        p.VendorID,
-		CategoryId:      p.CategoryID,
-		Name:            p.Name,
-		Description:     p.Description,
-		Price:           p.Price,
-		StockCount:      uint32(p.StockCount),
-		Attributes:      p.Attributes.OrFlattened(p.Characteristics).ToProto(),
-		Characteristics: p.Characteristics.ToProto(),
-		Images:          p.Images.ToProto(),
-		CreatedAt:       timeToProto(p.CreatedAt),
-		UpdatedAt:       timeToProto(p.UpdatedAt),
+		Id:                 p.ID,
+		VendorId:           p.VendorID,
+		CategoryId:         p.CategoryID,
+		Name:               p.Name,
+		Description:        p.Description,
+		Price:              p.Price,
+		AcceptsCrypto:      p.AcceptsCrypto,
+		CryptoPricingMode:  p.CryptoPricingMode,
+		CryptoPriceUsdt:    p.CryptoPriceUSDT,
+		EffectiveUsdtPrice: p.EffectiveUSDTPrice,
+		RubPerUsdt:         p.RubPerUSDT,
+		StockCount:         uint32(p.StockCount),
+		Attributes:         p.Attributes.OrFlattened(p.Characteristics).ToProto(),
+		Characteristics:    p.Characteristics.ToProto(),
+		Images:             p.Images.ToProto(),
+		CreatedAt:          timeToProto(p.CreatedAt),
+		UpdatedAt:          timeToProto(p.UpdatedAt),
 	}
+}
+
+type ExchangeRate struct {
+	RubPerUSDT string    `db:"rub_per_usdt"`
+	UpdatedAt  time.Time `db:"updated_at"`
 }
 
 func (l ProductList) ToProto() []*pbdomain.Product {

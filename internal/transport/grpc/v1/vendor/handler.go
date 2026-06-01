@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/jackc/pgx/v5/pgconn"
+	serviceclient "github.com/martketplace-vkr/catalog/internal/service/client"
 	"github.com/martketplace-vkr/catalog/internal/service/client/dto"
 	domainpb "github.com/martketplace-vkr/catalog/pkg/api/grpc/v1/domain"
 	vendorpb "github.com/martketplace-vkr/catalog/pkg/api/grpc/v1/vendor"
@@ -16,7 +17,10 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-var pricePattern = regexp.MustCompile(`^\d+(\.\d{1,2})?$`)
+var (
+	pricePattern     = regexp.MustCompile(`^\d+(\.\d{1,2})?$`)
+	usdtPricePattern = regexp.MustCompile(`^\d+(\.\d{1,8})?$`)
+)
 
 type Handler struct {
 	service service
@@ -107,7 +111,7 @@ func validateCreateProductRequest(req *vendorpb.CreateProductRequest) error {
 		return status.Error(codes.InvalidArgument, "request is required")
 	}
 
-	return validateProductMutation(req.VendorId, req.CategoryId, req.Name, req.Price, req.StockCount, req.Attributes, req.Characteristics, req.Images)
+	return validateProductMutation(req.VendorId, req.CategoryId, req.Name, req.Price, req.StockCount, req.Attributes, req.Characteristics, req.Images, req.AcceptsCrypto, req.CryptoPricingMode, req.CryptoPriceUsdt)
 }
 
 func validateUpdateProductRequest(req *vendorpb.UpdateProductRequest) error {
@@ -119,7 +123,7 @@ func validateUpdateProductRequest(req *vendorpb.UpdateProductRequest) error {
 		return status.Error(codes.InvalidArgument, "product_id must be positive")
 	}
 
-	return validateProductMutation(req.VendorId, req.CategoryId, req.Name, req.Price, req.StockCount, req.Attributes, req.Characteristics, req.Images)
+	return validateProductMutation(req.VendorId, req.CategoryId, req.Name, req.Price, req.StockCount, req.Attributes, req.Characteristics, req.Images, req.AcceptsCrypto, req.CryptoPricingMode, req.CryptoPriceUsdt)
 }
 
 func validateDeleteProductRequest(req *vendorpb.DeleteProductRequest) error {
@@ -147,6 +151,9 @@ func validateProductMutation(
 	attributes []*domainpb.ProductAttributeInput,
 	characteristics []*domainpb.ProductCharacteristicInput,
 	images []*domainpb.ProductImageInput,
+	acceptsCrypto bool,
+	cryptoPricingMode string,
+	cryptoPriceUSDT string,
 ) error {
 	if vendorID <= 0 {
 		return status.Error(codes.InvalidArgument, "vendor_id must be positive")
@@ -173,12 +180,49 @@ func validateProductMutation(
 		return status.Error(codes.InvalidArgument, "price must be a non-negative decimal with up to 2 fractional digits")
 	}
 
+	if err := validateCryptoPricing(acceptsCrypto, cryptoPricingMode, cryptoPriceUSDT); err != nil {
+		return err
+	}
+
 	if err := validateProductCharacteristics(characteristics, attributes); err != nil {
 		return err
 	}
 
 	if err := validateProductImages(images); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func validateCryptoPricing(acceptsCrypto bool, mode string, priceUSDT string) error {
+	trimmedMode := strings.TrimSpace(mode)
+	trimmedPrice := strings.TrimSpace(priceUSDT)
+
+	if !acceptsCrypto {
+		if trimmedMode != "" && trimmedMode != "disabled" {
+			return status.Error(codes.InvalidArgument, "crypto_pricing_mode must be disabled when accepts_crypto is false")
+		}
+		if trimmedPrice != "" {
+			return status.Error(codes.InvalidArgument, "crypto_price_usdt must be empty when accepts_crypto is false")
+		}
+		return nil
+	}
+
+	switch trimmedMode {
+	case "fixed_usdt":
+		if trimmedPrice == "" {
+			return status.Error(codes.InvalidArgument, "crypto_price_usdt is required for fixed_usdt pricing")
+		}
+		if !usdtPricePattern.MatchString(trimmedPrice) || strings.Trim(trimmedPrice, "0.") == "" {
+			return status.Error(codes.InvalidArgument, "crypto_price_usdt must be a positive decimal with up to 8 fractional digits")
+		}
+	case "rub_rate":
+		if trimmedPrice != "" {
+			return status.Error(codes.InvalidArgument, "crypto_price_usdt must be empty for rub_rate pricing")
+		}
+	default:
+		return status.Error(codes.InvalidArgument, "crypto_pricing_mode must be fixed_usdt or rub_rate when accepts_crypto is true")
 	}
 
 	return nil
@@ -288,6 +332,8 @@ func mapError(err error) error {
 	}
 
 	switch {
+	case errors.Is(err, serviceclient.ErrUSDTExchangeRateRequired):
+		return status.Error(codes.FailedPrecondition, "USDT exchange rate must be configured before using rub_rate pricing")
 	case errors.Is(err, context.Canceled):
 		return status.Error(codes.Canceled, "request was canceled")
 	case errors.Is(err, context.DeadlineExceeded):

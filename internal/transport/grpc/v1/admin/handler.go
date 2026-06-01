@@ -4,15 +4,20 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"regexp"
 	"strings"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/martketplace-vkr/catalog/domain"
 	serviceadmin "github.com/martketplace-vkr/catalog/internal/service/admin"
 	"github.com/martketplace-vkr/catalog/internal/service/admin/dto"
 	adminpb "github.com/martketplace-vkr/catalog/pkg/api/grpc/v1/admin"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
+
+var ratePattern = regexp.MustCompile(`^\d+(\.\d{1,8})?$`)
 
 type Handler struct {
 	service service
@@ -79,6 +84,42 @@ func (h *Handler) DeleteCategory(
 	}, nil
 }
 
+func (h *Handler) GetUSDTExchangeRate(
+	ctx context.Context,
+	req *adminpb.GetUSDTExchangeRateRequest,
+) (*adminpb.GetUSDTExchangeRateResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "request is required")
+	}
+
+	rate, err := h.service.GetUSDTExchangeRate(ctx)
+	if err != nil {
+		return nil, mapError(err)
+	}
+
+	return &adminpb.GetUSDTExchangeRateResponse{
+		Rate: exchangeRateToProto(rate),
+	}, nil
+}
+
+func (h *Handler) UpdateUSDTExchangeRate(
+	ctx context.Context,
+	req *adminpb.UpdateUSDTExchangeRateRequest,
+) (*adminpb.UpdateUSDTExchangeRateResponse, error) {
+	if err := validateUpdateUSDTExchangeRateRequest(req); err != nil {
+		return nil, err
+	}
+
+	rate, err := h.service.UpdateUSDTExchangeRate(ctx, dto.UpdateExchangeRateRequestFromProto(req))
+	if err != nil {
+		return nil, mapError(err)
+	}
+
+	return &adminpb.UpdateUSDTExchangeRateResponse{
+		Rate: exchangeRateToProto(rate),
+	}, nil
+}
+
 func validateCreateCategoryRequest(req *adminpb.CreateCategoryRequest) error {
 	if req == nil {
 		return status.Error(codes.InvalidArgument, "request is required")
@@ -131,6 +172,29 @@ func validateDeleteCategoryRequest(req *adminpb.DeleteCategoryRequest) error {
 	}
 
 	return nil
+}
+
+func validateUpdateUSDTExchangeRateRequest(req *adminpb.UpdateUSDTExchangeRateRequest) error {
+	if req == nil {
+		return status.Error(codes.InvalidArgument, "request is required")
+	}
+
+	trimmedRate := strings.TrimSpace(req.RubPerUsdt)
+	if trimmedRate == "" {
+		return status.Error(codes.InvalidArgument, "rub_per_usdt must not be blank")
+	}
+	if !ratePattern.MatchString(trimmedRate) || strings.Trim(trimmedRate, "0.") == "" {
+		return status.Error(codes.InvalidArgument, "rub_per_usdt must be a positive decimal with up to 8 fractional digits")
+	}
+
+	return nil
+}
+
+func exchangeRateToProto(rate domain.ExchangeRate) *adminpb.ExchangeRate {
+	return &adminpb.ExchangeRate{
+		RubPerUsdt: rate.RubPerUSDT,
+		UpdatedAt:  rate.UpdatedAt.UTC().Format(time.RFC3339),
+	}
 }
 
 func mapError(err error) error {

@@ -2,12 +2,15 @@ package client
 
 import (
 	"context"
+	"errors"
 
 	"github.com/martketplace-vkr/catalog/domain"
 	"github.com/martketplace-vkr/catalog/internal/service/client/dto"
 )
 
 const defaultProductPageSize uint32 = 20
+
+var ErrUSDTExchangeRateRequired = errors.New("USDT exchange rate is required")
 
 type service struct {
 	txManager  txManager
@@ -62,6 +65,10 @@ func (s *service) GetVendorProducts(ctx context.Context, vendorID int64) (produc
 }
 
 func (s *service) CreateProduct(ctx context.Context, req dto.CreateProductRequest) (product domain.Product, err error) {
+	if err := s.validateExchangeRate(ctx, req.AcceptsCrypto, req.CryptoPricingMode); err != nil {
+		return product, err
+	}
+
 	err = s.txManager.Do(ctx, func(ctx context.Context) error {
 		product, err = s.repository.CreateProduct(ctx, req)
 		return err
@@ -74,6 +81,10 @@ func (s *service) CreateProduct(ctx context.Context, req dto.CreateProductReques
 }
 
 func (s *service) UpdateProduct(ctx context.Context, req dto.UpdateProductRequest) (product domain.Product, err error) {
+	if err := s.validateExchangeRate(ctx, req.AcceptsCrypto, req.CryptoPricingMode); err != nil {
+		return product, err
+	}
+
 	err = s.txManager.Do(ctx, func(ctx context.Context) error {
 		product, err = s.repository.UpdateProduct(ctx, req)
 		return err
@@ -83,6 +94,22 @@ func (s *service) UpdateProduct(ctx context.Context, req dto.UpdateProductReques
 	}
 
 	return product, nil
+}
+
+func (s *service) validateExchangeRate(ctx context.Context, acceptsCrypto bool, mode string) error {
+	if !acceptsCrypto || mode != "rub_rate" {
+		return nil
+	}
+
+	exists, err := s.repository.HasUSDTExchangeRate(ctx)
+	if err != nil {
+		return err
+	}
+	if !exists {
+		return ErrUSDTExchangeRateRequired
+	}
+
+	return nil
 }
 
 func (s *service) DeleteProduct(ctx context.Context, req dto.DeleteProductRequest) (err error) {
